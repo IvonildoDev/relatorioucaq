@@ -333,7 +333,9 @@
                         <option>Deslocamento de Pig e térmica na linha</option>
                         <option>Limpeza</option>
                         <option>Teste de estanquidade</option>
+                        <option>Teste hidrostático</option>
                         <option>Preenchimento de coluna</option>
+                        <option>Injeção na coluna</option>
                         <option>Apoio a slickline</option>
                     </select>
                 </div>
@@ -357,9 +359,11 @@
                     <label>Pressão (psi, opcional)</label>
                     <input id="operacaoPressao" placeholder="Ex: 650">
                 </div>
-                <button onclick="alert('Funcionalidade de registrar operação em desenvolvimento')"><i
-                        class="fa-solid fa-plus"></i> Registrar Operação</button>
+                <button onclick="salvarOperacao()"><i class="fa-solid fa-plus"></i> Registrar Operação</button>
+                <button id="btnOperacaoCancelada" style="background:#e53935;color:#fff;margin-top:10px;"
+                    onclick="registrarOperacaoCancelada()"><i class="fa-solid fa-ban"></i> Operação Cancelada</button>
                 <script>
+
                     // Função para salvar operação
                     function salvarOperacao() {
                         const poco = document.getElementById('operacaoPoco').value.trim();
@@ -373,10 +377,40 @@
                             alert('Preencha os campos obrigatórios da operação!');
                             return;
                         }
-                        const operacao = { poco, atividade, inicio, fim, volume, temperatura, pressao };
+                        const operacao = { poco, atividade, inicio, fim, volume, temperatura, pressao, status: 'Normal' };
                         localStorage.setItem('ucaq_operacao', JSON.stringify(operacao));
                         renderOperacaoSalva();
                         alert('Operação salva com sucesso!');
+                        // Limpar campos
+                        document.getElementById('operacaoPoco').value = '';
+                        document.getElementById('operacaoAtividade').value = '';
+                        document.getElementById('operacaoInicio').value = '';
+                        document.getElementById('operacaoFim').value = '';
+                        document.getElementById('operacaoVolume').value = '';
+                        document.getElementById('operacaoTemperatura').value = '';
+                        document.getElementById('operacaoPressao').value = '';
+                    }
+
+                    // Função para registrar operação cancelada
+                    function registrarOperacaoCancelada() {
+                        const poco = document.getElementById('operacaoPoco').value.trim();
+                        if (!poco) {
+                            alert('Informe o nome do poço para cancelar a operação!');
+                            return;
+                        }
+                        const operacaoCancelada = {
+                            poco: poco,
+                            atividade: '---',
+                            inicio: '',
+                            fim: '',
+                            volume: '',
+                            temperatura: '',
+                            pressao: '',
+                            status: 'Operação Cancelada'
+                        };
+                        localStorage.setItem('ucaq_operacao', JSON.stringify(operacaoCancelada));
+                        renderOperacaoSalva();
+                        alert('Operação cancelada registrada!');
                         // Limpar campos
                         document.getElementById('operacaoPoco').value = '';
                         document.getElementById('operacaoAtividade').value = '';
@@ -396,6 +430,7 @@
                             div.innerHTML = `
                                 <div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-top:10px;cursor:pointer;" onclick="preencherCamposOperacao()">
                                     <strong>Poço:</strong> ${o.poco}<br>
+                                    <strong>Status:</strong> ${o.status ? o.status : 'Normal'}<br>
                                     <strong>Atividade:</strong> ${o.atividade}<br>
                                     <strong>Hora Início:</strong> ${o.inicio}<br>
                                     <strong>Hora Fim:</strong> ${o.fim}<br>
@@ -1046,6 +1081,7 @@
                         html += `<div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
                             <strong>Operações</strong><br>
                             <strong>Poço:</strong> ${operacao.poco}<br>
+                            <strong>Status:</strong> ${operacao.status ? operacao.status : 'Normal'}<br>
                             <strong>Atividade:</strong> ${operacao.atividade}<br>
                             <strong>Hora Início:</strong> ${operacao.inicio}<br>
                             <strong>Hora Fim:</strong> ${operacao.fim}<br>
