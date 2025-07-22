@@ -44,7 +44,7 @@
 </head>
 
 <body>
-    <button class="menu-btn" onclick="toggleDrawer()"><i class="fa-solid fa-bars"></i> Menu</button>
+    <button class="menu-btn" onclick="toggleDrawer()"><i class="fa-solid fa-bars"></i></button>
     <div class="sidebar" id="drawer">
         <div style="display:flex;flex-direction:column;align-items:center;padding:24px 0 12px 0;">
             <div style="font-size:2.3rem;font-weight:900;letter-spacing:0.13em;line-height:1;">
@@ -67,14 +67,55 @@
         <a href="#" onclick="showScreen('abastecimento')"><i class="fa-solid fa-gas-pump"></i> Abastecimento</a>
         <a href="#" onclick="showScreen('repouso')"><i class="fa-solid fa-utensils"></i> Alimentação</a>
         <a href="#" onclick="showScreen('relatorio')"><i class="fa-solid fa-file-lines"></i> Relatório</a>
+        <a href="#" onclick="showScreen('sobre')"><i class="fa-solid fa-circle-info"></i> Sobre</a>
     </div>
     <div class="container">
         <!-- HomeScreen.js -->
         <div id="home" class="screen active">
             <div class="mobile-card">
                 <h1 class="header"><i class="fa-solid fa-house"></i> Registros de Operações</h1>
+                <div id="ultimoRegistroCard"></div>
                 <div id="logList"></div>
             </div>
+            <script>
+                // Exibe o último registro salvo no card da Home
+                function renderUltimoRegistro() {
+                    const div = document.getElementById('ultimoRegistroCard');
+                    if (!div) return;
+                    // Busca o último registro salvo (addLog)
+                    const reg = JSON.parse(localStorage.getItem('ucaq_ultimo_log'));
+                    if (reg) {
+                        div.innerHTML = `
+                        <div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin:14px 0 0 0;">
+                            <strong>Último Registro</strong><br>
+                            <strong>Equipe:</strong> ${reg.team || '-'}<br>
+                            <strong>Data:</strong> ${reg.date || '-'}<br>
+                            <strong>Poço:</strong> ${reg.well || '-'}<br>
+                            <strong>Status:</strong> ${reg.status || '-'}<br>
+                            <strong>Atividade:</strong> ${reg.activity || '-'}<br>
+                            <strong>Hora Início:</strong> ${reg.startTime || '-'}<br>
+                            <strong>Hora Fim:</strong> ${reg.endTime || '-'}<br>
+                            <strong>Volume:</strong> ${reg.volume || '-'}<br>
+                            <strong>Ângulo:</strong> ${reg.angle || '-'}<br>
+                            <strong>Pressão:</strong> ${reg.pressure || '-'}<br>
+                            <strong>Odômetro Início:</strong> ${reg.odometerStart || '-'}<br>
+                            <strong>Odômetro Fim:</strong> ${reg.odometerEnd || '-'}
+                        </div>
+                    `;
+                    } else {
+                        div.innerHTML = `<div style='color:#888;font-size:1em;margin:14px 0 0 0;'>Nenhum registro salvo ainda.</div>`;
+                    }
+                }
+                // Renderizar ao abrir Home
+                document.addEventListener('DOMContentLoaded', renderUltimoRegistro);
+                (function () {
+                    var oldShowScreen = window.showScreen;
+                    window.showScreen = function (screen) {
+                        if (typeof oldShowScreen === 'function') oldShowScreen(screen);
+                        if (screen === 'home') renderUltimoRegistro();
+                    };
+                })();
+            </script>
         </div>
 
         <!-- EquipeScreen.js -->
@@ -956,6 +997,12 @@
         <div id="relatorio" class="screen">
             <h1 class="header"><i class="fa-solid fa-file-lines"></i> Relatório</h1>
             <div id="relatorioConteudo"></div>
+            <div style="text-align:center; margin: 0 0 24px 0;">
+                <button id="btnLimparRelatorio"
+                    style="background:#e53935;color:#fff;padding:8px 20px;border:none;border-radius:6px;font-size:1rem;cursor:pointer;min-width:160px;margin-bottom:12px;">
+                    <i class="fa-solid fa-trash"></i> Limpar Relatório
+                </button>
+            </div>
             <script>
                 window.renderRelatorio = function renderRelatorio() {
                     // Carregar dados
@@ -1058,8 +1105,8 @@
                         </div>`;
                     }
                     html += `</div>`;
-                    // Botão compartilhar
-                    html += `<div style="text-align:center; margin: 18px 0;">
+                    // Botão compartilhar (com margem extra para não ficar sob o footer)
+                    html += `<div style="text-align:center; margin: 18px 0 48px 0;">
                         <button
                             style="background:#1976D2;color:#fff;padding:10px 24px;border:none;border-radius:6px;font-size:1rem;cursor:pointer;min-width:180px;"
                             onclick="compartilharRelatorio()">
@@ -1163,6 +1210,24 @@
                     if (document.getElementById('relatorioConteudo')) {
                         window.renderRelatorio();
                     }
+                    // Adicionar evento ao botão Limpar Relatório
+                    var btnLimpar = document.getElementById('btnLimparRelatorio');
+                    if (btnLimpar) {
+                        btnLimpar.onclick = function () {
+                            if (confirm('Deseja realmente limpar todos os dados do relatório?')) {
+                                localStorage.removeItem('ucaq_equipe');
+                                localStorage.removeItem('ucaq_deslocamento');
+                                localStorage.removeItem('ucaq_operacao');
+                                localStorage.removeItem('ucaq_aguardo');
+                                localStorage.removeItem('ucaq_mobilizacao');
+                                localStorage.removeItem('ucaq_desmobilizacao');
+                                localStorage.removeItem('ucaq_abastecimento');
+                                localStorage.removeItem('ucaq_repouso');
+                                window.renderRelatorio();
+                                alert('Relatório limpo!');
+                            }
+                        };
+                    }
                 });
                 // Também renderizar ao mostrar a tela de relatório
                 (function () {
@@ -1171,6 +1236,24 @@
                         if (typeof oldShowScreen === 'function') oldShowScreen(screen);
                         if (screen === 'relatorio' && document.getElementById('relatorioConteudo')) {
                             window.renderRelatorio();
+                            // Adicionar evento ao botão Limpar Relatório
+                            var btnLimpar = document.getElementById('btnLimparRelatorio');
+                            if (btnLimpar) {
+                                btnLimpar.onclick = function () {
+                                    if (confirm('Deseja realmente limpar todos os dados do relatório?')) {
+                                        localStorage.removeItem('ucaq_equipe');
+                                        localStorage.removeItem('ucaq_deslocamento');
+                                        localStorage.removeItem('ucaq_operacao');
+                                        localStorage.removeItem('ucaq_aguardo');
+                                        localStorage.removeItem('ucaq_mobilizacao');
+                                        localStorage.removeItem('ucaq_desmobilizacao');
+                                        localStorage.removeItem('ucaq_abastecimento');
+                                        localStorage.removeItem('ucaq_repouso');
+                                        window.renderRelatorio();
+                                        alert('Relatório limpo!');
+                                    }
+                                };
+                            }
                         }
                     };
                 })();
@@ -1229,6 +1312,32 @@
                 <input id="odometerEnd" placeholder="Ex: 193341">
             </div>
             <button onclick="addLog()"><i class="fa-solid fa-save"></i> Salvar Registro</button>
+            <script>
+                // Salvar o último registro ao adicionar
+                function addLog() {
+                    const reg = {
+                        team: document.getElementById('team').value.trim(),
+                        date: document.getElementById('date').value.trim(),
+                        well: document.getElementById('well').value.trim(),
+                        status: document.getElementById('status').value.trim(),
+                        activity: document.getElementById('activity').value.trim(),
+                        startTime: document.getElementById('startTime').value.trim(),
+                        endTime: document.getElementById('endTime').value.trim(),
+                        volume: document.getElementById('volume').value.trim(),
+                        angle: document.getElementById('angle').value.trim(),
+                        pressure: document.getElementById('pressure').value.trim(),
+                        odometerStart: document.getElementById('odometerStart').value.trim(),
+                        odometerEnd: document.getElementById('odometerEnd').value.trim()
+                    };
+                    localStorage.setItem('ucaq_ultimo_log', JSON.stringify(reg));
+                    // ...aqui pode ir o código original de salvar log, se houver...
+                    alert('Registro salvo!');
+                    // Atualiza card na Home se estiver visível
+                    if (document.getElementById('ultimoRegistroCard')) {
+                        if (typeof renderUltimoRegistro === 'function') renderUltimoRegistro();
+                    }
+                }
+            </script>
         </div>
 
         <!-- DetailsScreen.js -->
@@ -1237,13 +1346,11 @@
             <div id="detailsContent"></div>
             <button onclick="showScreen('home')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         </div>
-        <!-- Botão para acessar Sobre (opcional, pode ser colocado no menu ou rodapé) -->
-        <div style="position:fixed;right:18px;bottom:18px;z-index:1000;">
-            <button onclick="showScreen('sobre')" title="Sobre o sistema"
-                style="background:#1976D2;color:#fff;padding:10px 18px;border:none;border-radius:50%;font-size:1.3em;box-shadow:0 2px 8px #0002;cursor:pointer;">
-                <i class="fa-solid fa-circle-info"></i>
-            </button>
-        </div>
+        <!-- Footer simples -->
+        <footer
+            style="position:fixed;left:0;right:0;bottom:0;width:100vw;background:#f5f5f5;border-top:1px solid #ddd;padding:8px 0 4px 0;z-index:1000;display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:0.98em;color:#444;">Relatório de Operações UCAQ &copy; 2025</span>
+        </footer>
     </div>
     <script src="main.js"></script>
     <script>
