@@ -1,0 +1,1240 @@
+<script>
+    // Função para inserir automaticamente o separador ":" ao digitar hora
+    function autoInsertTimeSeparator(e) {
+        let v = e.target.value.replace(/[^0-9]/g, '');
+        if (v.length > 2) v = v.slice(0, 4);
+        if (v.length > 2) {
+            v = v.slice(0, 2) + ':' + v.slice(2);
+        }
+        else if (v.length > 0 && v.length <= 2) {
+            v = v;
+        }
+        e.target.value = v;
+    }
+    // Adiciona evento a todos os campos de hora
+    document.addEventListener('DOMContentLoaded', function () {
+        const horaInputs = [
+            'deslocInicio', 'deslocFim',
+            'operacaoInicio', 'operacaoFim',
+            'aguardoInicio', 'aguardoFim',
+            'mobilizacaoInicio', 'mobilizacaoFim',
+            'desmobilizacaoInicio', 'desmobilizacaoFim',
+            'abastecimentoInicio', 'abastecimentoFim',
+            'repousoInicio', 'repousoFim'
+        ];
+        horaInputs.forEach(function (id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', autoInsertTimeSeparator);
+            }
+        });
+    });
+</script>
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Operações de Poços</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome CDN confiável -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <button class="menu-btn" onclick="toggleDrawer()"><i class="fa-solid fa-bars"></i> Menu</button>
+    <div class="sidebar" id="drawer">
+        <div style="display:flex;flex-direction:column;align-items:center;padding:24px 0 12px 0;">
+            <div style="font-size:2.3rem;font-weight:900;letter-spacing:0.13em;line-height:1;">
+                <span style="color:#111;">U</span><span style="color:#888;">c</span><span
+                    style="background:linear-gradient(90deg,#FFD700,#FFC300,#FFB300,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-fill-color:transparent;">a</span><span
+                    style="color:#111;">q</span>
+            </div>
+            <div
+                style="font-size:0.88rem;font-weight:500;color:#444;text-align:center;line-height:1.2;margin-top:6px;max-width:120px;letter-spacing:0.01em;">
+                Unidade de Circulação<br>de Água Quente
+            </div>
+        </div>
+        <a href="#" onclick="showScreen('home')"><i class="fa-solid fa-house"></i> Home</a>
+        <a href="#" onclick="showScreen('equipe')"><i class="fa-solid fa-users"></i> Equipe</a>
+        <a href="#" onclick="showScreen('deslocamento')"><i class="fa-solid fa-route"></i> Deslocamento</a>
+        <a href="#" onclick="showScreen('operacoes')"><i class="fa-solid fa-gears"></i> Operações</a>
+        <a href="#" onclick="showScreen('aguardo')"><i class="fa-solid fa-clock"></i> Aguardo</a>
+        <a href="#" onclick="showScreen('mobilizacao')"><i class="fa-solid fa-truck-arrow-right"></i> Mobilização</a>
+        <a href="#" onclick="showScreen('desmobilizacao')"><i class="fa-solid fa-truck-ramp-box"></i> Desmobilização</a>
+        <a href="#" onclick="showScreen('abastecimento')"><i class="fa-solid fa-gas-pump"></i> Abastecimento</a>
+        <a href="#" onclick="showScreen('repouso')"><i class="fa-solid fa-utensils"></i> Alimentação</a>
+        <a href="#" onclick="showScreen('relatorio')"><i class="fa-solid fa-file-lines"></i> Relatório</a>
+    </div>
+    <div class="container">
+        <!-- HomeScreen.js -->
+        <div id="home" class="screen active">
+            <div class="mobile-card">
+                <h1 class="header"><i class="fa-solid fa-house"></i> Registros de Operações</h1>
+                <div id="logList"></div>
+            </div>
+        </div>
+
+        <!-- EquipeScreen.js -->
+        <div id="equipe" class="screen">
+            <div class="mobile-card">
+                <h1 class="header"><i class="fa-solid fa-users"></i> Equipe</h1>
+                <div class="form-group">
+                    <label>Nome do Operador</label>
+                    <input id="equipeOperador" placeholder="Ex: João Silva">
+                </div>
+                <div class="form-group">
+                    <label>Nome do Auxiliar</label>
+                    <input id="equipeAuxiliar" placeholder="Ex: Maria Souza">
+                </div>
+                <div class="form-group">
+                    <label>Data</label>
+                    <input id="equipeData" type="date" placeholder="Ex: 2025-07-22">
+                </div>
+                <div class="form-group">
+                    <label>Nome do Poço</label>
+                    <input id="equipePoco" placeholder="Ex: Pir-67">
+                </div>
+                <button onclick="alert('Funcionalidade de salvar equipe em desenvolvimento')"><i
+                        class="fa-solid fa-user-plus"></i> Salvar Equipe</button>
+                <script>
+                    // Função para salvar equipe
+                    function salvarEquipe() {
+                        const operador = document.getElementById('equipeOperador').value.trim();
+                        const auxiliar = document.getElementById('equipeAuxiliar').value.trim();
+                        const data = document.getElementById('equipeData').value;
+                        const poco = document.getElementById('equipePoco').value.trim();
+                        if (!operador || !auxiliar || !data || !poco) {
+                            alert('Preencha todos os campos da equipe!');
+                            return;
+                        }
+                        const equipe = { operador, auxiliar, data, poco };
+                        localStorage.setItem('ucaq_equipe', JSON.stringify(equipe));
+                        renderEquipeSalva();
+                        alert('Equipe salva com sucesso!');
+                    }
+
+                    // Função para exibir equipe salva
+                    function renderEquipeSalva() {
+                        const equipeDiv = document.getElementById('equipeLista');
+                        equipeDiv.innerHTML = '';
+                        const equipe = JSON.parse(localStorage.getItem('ucaq_equipe'));
+                        if (equipe) {
+                            equipeDiv.innerHTML = `
+                            <div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-top:10px;cursor:pointer;" onclick="preencherCamposEquipe()">
+                                <strong>Operador:</strong> ${equipe.operador}<br>
+                                <strong>Auxiliar:</strong> ${equipe.auxiliar}<br>
+                                <strong>Data:</strong> ${equipe.data.split('-').reverse().join('/')}<br>
+                                <strong>Poço:</strong> ${equipe.poco}
+                                <div style='font-size:0.85em;color:#1976D2;margin-top:4px;'>Clique para preencher os campos</div>
+                            </div>
+                        `;
+                        }
+                    }
+
+                    // Função global para preencher os campos do formulário de equipe com os dados salvos
+                    function preencherCamposEquipe() {
+                        const equipe = JSON.parse(localStorage.getItem('ucaq_equipe'));
+                        if (equipe) {
+                            document.getElementById('equipeOperador').value = equipe.operador;
+                            document.getElementById('equipeAuxiliar').value = equipe.auxiliar;
+                            document.getElementById('equipeData').value = equipe.data;
+                            document.getElementById('equipePoco').value = equipe.poco;
+                        }
+                    }
+
+                    // Renderizar equipe salva ao abrir tela Equipe
+                    document.addEventListener('DOMContentLoaded', function () {
+                        renderEquipeSalva();
+                    });
+                </script>
+                <div id="equipeLista"></div>
+                <div class="mobile-nav-btns">
+                    <button onclick="showScreen('home')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+                    <button onclick="showScreen('deslocamento')"><i class="fa-solid fa-arrow-right"></i>
+                        Próximo</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DeslocamentoScreen.js -->
+        <div id="deslocamento" class="screen">
+            <div class="mobile-card">
+                <h1 class="header"><i class="fa-solid fa-route"></i> Deslocamento</h1>
+                <div class="form-group">
+                    <label>Nome do Poço</label>
+                    <input id="deslocPoco" placeholder="Ex: Pir-67">
+                </div>
+                <div class="form-group">
+                    <label>Origem</label>
+                    <input id="deslocOrigem" placeholder="Ex: Pir-67">
+                </div>
+                <div class="form-group">
+                    <label>Destino</label>
+                    <input id="deslocDestino" placeholder="Ex: Eppir">
+                </div>
+                <div class="form-group">
+                    <label>Hora Início</label>
+                    <input id="deslocInicio" placeholder="Ex: 11:24">
+                </div>
+                <div class="form-group">
+                    <label>Hora Fim</label>
+                    <input id="deslocFim" placeholder="Ex: 11:41">
+                </div>
+                <div class="form-group">
+                    <label>KM Início</label>
+                    <input id="deslocKmInicio" placeholder="Ex: 193.3">
+                </div>
+                <div class="form-group">
+                    <label>KM Final</label>
+                    <input id="deslocKmFim" placeholder="Ex: 194.1">
+                </div>
+                <button onclick="alert('Funcionalidade de registrar deslocamento em desenvolvimento')"><i
+                        class="fa-solid fa-location-arrow"></i> Registrar Deslocamento</button>
+                <script>
+                    // Função para salvar deslocamento
+                    function salvarDeslocamento() {
+                        const poco = document.getElementById('deslocPoco').value.trim();
+                        const origem = document.getElementById('deslocOrigem').value.trim();
+                        const destino = document.getElementById('deslocDestino').value.trim();
+                        const inicio = document.getElementById('deslocInicio').value.trim();
+                        const fim = document.getElementById('deslocFim').value.trim();
+                        const kmInicio = document.getElementById('deslocKmInicio').value.trim();
+                        const kmFim = document.getElementById('deslocKmFim').value.trim();
+                        if (!poco || !origem || !destino || !inicio || !fim || !kmInicio || !kmFim) {
+                            alert('Preencha todos os campos do deslocamento!');
+                            return;
+                        }
+                        const deslocamento = { poco, origem, destino, inicio, fim, kmInicio, kmFim };
+                        localStorage.setItem('ucaq_deslocamento', JSON.stringify(deslocamento));
+                        renderDeslocamentoSalvo();
+                        alert('Deslocamento salvo com sucesso!');
+                        // Limpar campos
+                        document.getElementById('deslocPoco').value = '';
+                        document.getElementById('deslocOrigem').value = '';
+                        document.getElementById('deslocDestino').value = '';
+                        document.getElementById('deslocInicio').value = '';
+                        document.getElementById('deslocFim').value = '';
+                        document.getElementById('deslocKmInicio').value = '';
+                        document.getElementById('deslocKmFim').value = '';
+                    }
+
+                    // Função para exibir deslocamento salvo
+                    function renderDeslocamentoSalvo() {
+                        const div = document.getElementById('deslocamentoSalvo');
+                        div.innerHTML = '';
+                        const d = JSON.parse(localStorage.getItem('ucaq_deslocamento'));
+                        if (d) {
+                            let kmPercorrido = '';
+                            if (!isNaN(parseFloat(d.kmInicio)) && !isNaN(parseFloat(d.kmFim))) {
+                                kmPercorrido = (parseFloat(d.kmFim) - parseFloat(d.kmInicio)).toFixed(2) + ' km';
+                            }
+                            div.innerHTML = `
+                                <div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-top:10px;cursor:pointer;" onclick="preencherCamposDeslocamento()">
+                                    <strong>Poço:</strong> ${d.poco}<br>
+                                    <strong>Origem:</strong> ${d.origem}<br>
+                                    <strong>Destino:</strong> ${d.destino}<br>
+                                    <strong>Hora Inicial:</strong> ${d.inicio}<br>
+                                    <strong>Hora Final:</strong> ${d.fim}<br>
+                                    <strong>KM Inicial:</strong> ${d.kmInicio}<br>
+                                    <strong>KM Final:</strong> ${d.kmFim}<br>
+                                    <strong>KM Percorrido:</strong> ${kmPercorrido}
+                                    <div style='font-size:0.85em;color:#1976D2;margin-top:4px;'>Clique para preencher os campos</div>
+                                </div>
+                            `;
+                        }
+                    }
+
+                    // Preencher campos do formulário de deslocamento
+                    function preencherCamposDeslocamento() {
+                        const d = JSON.parse(localStorage.getItem('ucaq_deslocamento'));
+                        if (d) {
+                            document.getElementById('deslocPoco').value = d.poco;
+                            document.getElementById('deslocOrigem').value = d.origem;
+                            document.getElementById('deslocDestino').value = d.destino;
+                            document.getElementById('deslocInicio').value = d.inicio;
+                            document.getElementById('deslocFim').value = d.fim;
+                            document.getElementById('deslocKmInicio').value = d.kmInicio;
+                            document.getElementById('deslocKmFim').value = d.kmFim;
+                        }
+                    }
+
+                    // Renderizar deslocamento salvo ao abrir tela Deslocamento
+                    document.addEventListener('DOMContentLoaded', function () {
+                        renderDeslocamentoSalvo();
+                    });
+                </script>
+                <div id="deslocamentoSalvo"></div>
+                <div class="mobile-nav-btns">
+                    <button onclick="showScreen('equipe')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+                    <button onclick="showScreen('operacoes')"><i class="fa-solid fa-arrow-right"></i> Próximo</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- OperacoesScreen.js -->
+        <div id="operacoes" class="screen">
+            <div class="mobile-card">
+                <h1 class="header"><i class="fa-solid fa-gears"></i> Operações</h1>
+                <div class="form-group">
+                    <label>Nome do Poço</label>
+                    <input id="operacaoPoco" placeholder="Ex: Pir-67">
+                </div>
+                <div class="form-group">
+                    <label>Atividade</label>
+                    <select id="operacaoAtividade">
+                        <option value="">Selecione uma atividade</option>
+                        <option>Deslocamento de Pig</option>
+                        <option>Desparafinação térmica</option>
+                        <option>Preenchimento de linha</option>
+                        <option>Deslocamento de Pig e térmica na linha</option>
+                        <option>Limpeza</option>
+                        <option>Teste de estanquidade</option>
+                        <option>Preenchimento de coluna</option>
+                        <option>Apoio a slickline</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Hora Início</label>
+                    <input id="operacaoInicio" placeholder="Ex: 10:23">
+                </div>
+                <div class="form-group">
+                    <label>Hora Fim</label>
+                    <input id="operacaoFim" placeholder="Ex: 10:41">
+                </div>
+                <div class="form-group">
+                    <label>Volume (bbl, opcional)</label>
+                    <input id="operacaoVolume" placeholder="Ex: 5">
+                </div>
+                <div class="form-group">
+                    <label>Temperatura (°C, opcional)</label>
+                    <input id="operacaoTemperatura" placeholder="Ex: 60">
+                </div>
+                <div class="form-group">
+                    <label>Pressão (psi, opcional)</label>
+                    <input id="operacaoPressao" placeholder="Ex: 650">
+                </div>
+                <button onclick="alert('Funcionalidade de registrar operação em desenvolvimento')"><i
+                        class="fa-solid fa-plus"></i> Registrar Operação</button>
+                <script>
+                    // Função para salvar operação
+                    function salvarOperacao() {
+                        const poco = document.getElementById('operacaoPoco').value.trim();
+                        const atividade = document.getElementById('operacaoAtividade').value.trim();
+                        const inicio = document.getElementById('operacaoInicio').value.trim();
+                        const fim = document.getElementById('operacaoFim').value.trim();
+                        const volume = document.getElementById('operacaoVolume').value.trim();
+                        const temperatura = document.getElementById('operacaoTemperatura').value.trim();
+                        const pressao = document.getElementById('operacaoPressao').value.trim();
+                        if (!poco || !atividade || !inicio || !fim) {
+                            alert('Preencha os campos obrigatórios da operação!');
+                            return;
+                        }
+                        const operacao = { poco, atividade, inicio, fim, volume, temperatura, pressao };
+                        localStorage.setItem('ucaq_operacao', JSON.stringify(operacao));
+                        renderOperacaoSalva();
+                        alert('Operação salva com sucesso!');
+                        // Limpar campos
+                        document.getElementById('operacaoPoco').value = '';
+                        document.getElementById('operacaoAtividade').value = '';
+                        document.getElementById('operacaoInicio').value = '';
+                        document.getElementById('operacaoFim').value = '';
+                        document.getElementById('operacaoVolume').value = '';
+                        document.getElementById('operacaoTemperatura').value = '';
+                        document.getElementById('operacaoPressao').value = '';
+                    }
+
+                    // Função para exibir operação salva
+                    function renderOperacaoSalva() {
+                        const div = document.getElementById('operacaoSalva');
+                        div.innerHTML = '';
+                        const o = JSON.parse(localStorage.getItem('ucaq_operacao'));
+                        if (o) {
+                            div.innerHTML = `
+                                <div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-top:10px;cursor:pointer;" onclick="preencherCamposOperacao()">
+                                    <strong>Poço:</strong> ${o.poco}<br>
+                                    <strong>Atividade:</strong> ${o.atividade}<br>
+                                    <strong>Hora Início:</strong> ${o.inicio}<br>
+                                    <strong>Hora Fim:</strong> ${o.fim}<br>
+                                    <strong>Volume:</strong> ${o.volume ? o.volume + ' bbl' : '-'}<br>
+                                    <strong>Temperatura:</strong> ${o.temperatura ? o.temperatura + ' °C' : '-'}<br>
+                                    <strong>Pressão:</strong> ${o.pressao ? o.pressao + ' psi' : '-'}
+                                    <div style='font-size:0.85em;color:#1976D2;margin-top:4px;'>Clique para preencher os campos</div>
+                                </div>
+                            `;
+                        }
+                    }
+
+                    // Preencher campos do formulário de operação
+                    function preencherCamposOperacao() {
+                        const o = JSON.parse(localStorage.getItem('ucaq_operacao'));
+                        if (o) {
+                            document.getElementById('operacaoPoco').value = o.poco;
+                            document.getElementById('operacaoAtividade').value = o.atividade;
+                            document.getElementById('operacaoInicio').value = o.inicio;
+                            document.getElementById('operacaoFim').value = o.fim;
+                            document.getElementById('operacaoVolume').value = o.volume;
+                            document.getElementById('operacaoTemperatura').value = o.temperatura;
+                            document.getElementById('operacaoPressao').value = o.pressao;
+                        }
+                    }
+
+                    // Renderizar operação salva ao abrir tela Operações
+                    document.addEventListener('DOMContentLoaded', function () {
+                        renderOperacaoSalva();
+                    });
+                </script>
+                <div id="operacaoSalva"></div>
+                <div class="mobile-nav-btns">
+                    <button onclick="showScreen('deslocamento')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+                    <button onclick="showScreen('aguardo')"><i class="fa-solid fa-arrow-right"></i> Próximo</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- AguardoScreen.js -->
+        <div id="aguardo" class="screen">
+            <h1 class="header"><i class="fa-solid fa-clock"></i> Aguardo</h1>
+            <div class="form-group">
+                <label>Nome do Poço</label>
+                <input id="aguardoPoco" placeholder="Ex: Pir-67">
+            </div>
+            <div class="form-group">
+                <label>Motivo do Aguardo</label>
+                <input id="aguardoMotivo" placeholder="Ex: Esperando material">
+            </div>
+            <div class="form-group">
+                <label>Hora Início</label>
+                <input id="aguardoInicio" placeholder="Ex: 08:24">
+            </div>
+            <div class="form-group">
+                <label>Hora Fim</label>
+                <input id="aguardoFim" placeholder="Ex: 10:13">
+            </div>
+            <button onclick="alert('Funcionalidade de registrar aguardo em desenvolvimento')"><i
+                    class="fa-solid fa-hourglass-half"></i> Registrar Aguardo</button>
+            <script>
+                // Função para salvar aguardo
+                function salvarAguardo() {
+                    const poco = document.getElementById('aguardoPoco').value.trim();
+                    const motivo = document.getElementById('aguardoMotivo').value.trim();
+                    const inicio = document.getElementById('aguardoInicio').value.trim();
+                    const fim = document.getElementById('aguardoFim').value.trim();
+                    if (!poco || !motivo || !inicio || !fim) {
+                        alert('Preencha todos os campos do aguardo!');
+                        return;
+                    }
+                    // Calcular tempo aguardando
+                    let tempoAguardando = '';
+                    if (/^\d{2}:\d{2}$/.test(inicio) && /^\d{2}:\d{2}$/.test(fim)) {
+                        const [h1, m1] = inicio.split(':').map(Number);
+                        const [h2, m2] = fim.split(':').map(Number);
+                        let min = (h2 * 60 + m2) - (h1 * 60 + m1);
+                        if (min < 0) min += 24 * 60;
+                        const horas = Math.floor(min / 60);
+                        const minutos = min % 60;
+                        tempoAguardando = `${horas}h ${minutos}min`;
+                    }
+                    const aguardo = { poco, motivo, inicio, fim, tempoAguardando };
+                    localStorage.setItem('ucaq_aguardo', JSON.stringify(aguardo));
+                    renderAguardoSalvo();
+                    alert('Aguardo salvo com sucesso!');
+                    // Limpar campos
+                    document.getElementById('aguardoPoco').value = '';
+                    document.getElementById('aguardoMotivo').value = '';
+                    document.getElementById('aguardoInicio').value = '';
+                    document.getElementById('aguardoFim').value = '';
+                }
+
+                // Função para exibir aguardo salvo
+                function renderAguardoSalvo() {
+                    const div = document.getElementById('aguardoSalvo');
+                    div.innerHTML = '';
+                    const a = JSON.parse(localStorage.getItem('ucaq_aguardo'));
+                    if (a) {
+                        div.innerHTML = `
+                            <div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-top:10px;cursor:pointer;" onclick="preencherCamposAguardo()">
+                                <strong>Poço:</strong> ${a.poco}<br>
+                                <strong>Motivo:</strong> ${a.motivo}<br>
+                                <strong>Hora Início:</strong> ${a.inicio}<br>
+                                <strong>Hora Fim:</strong> ${a.fim}<br>
+                                <strong>Tempo Aguardando:</strong> ${a.tempoAguardando || '-'}
+                                <div style='font-size:0.85em;color:#1976D2;margin-top:4px;'>Clique para preencher os campos</div>
+                            </div>
+                        `;
+                    }
+                }
+
+                // Preencher campos do formulário de aguardo
+                function preencherCamposAguardo() {
+                    const a = JSON.parse(localStorage.getItem('ucaq_aguardo'));
+                    if (a) {
+                        document.getElementById('aguardoPoco').value = a.poco;
+                        document.getElementById('aguardoMotivo').value = a.motivo;
+                        document.getElementById('aguardoInicio').value = a.inicio;
+                        document.getElementById('aguardoFim').value = a.fim;
+                    }
+                }
+
+                // Renderizar aguardo salvo ao abrir tela Aguardo
+                document.addEventListener('DOMContentLoaded', function () {
+                    renderAguardoSalvo();
+                });
+            </script>
+            <div id="aguardoSalvo"></div>
+            <div class="mobile-nav-btns">
+                <button onclick="showScreen('operacoes')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+                <button onclick="showScreen('mobilizacao')"><i class="fa-solid fa-arrow-right"></i> Próximo</button>
+            </div>
+        </div>
+
+        <!-- MobilizacaoScreen.js -->
+        <div id="mobilizacao" class="screen">
+            <h1 class="header"><i class="fa-solid fa-truck-arrow-right"></i> Mobilização</h1>
+            <div class="form-group">
+                <label>Nome do Poço</label>
+                <input id="mobilizacaoPoco" placeholder="Ex: Pir-67">
+            </div>
+            <div class="form-group">
+                <label>Atividade</label>
+                <input id="mobilizacaoAtividade" placeholder="Ex: Mobilizando equipamentos">
+            </div>
+            <div class="form-group">
+                <label>Hora Início</label>
+                <input id="mobilizacaoInicio" placeholder="Ex: 10:13">
+            </div>
+            <div class="form-group">
+                <label>Hora Fim</label>
+                <input id="mobilizacaoFim" placeholder="Ex: 10:23">
+            </div>
+            <button onclick="salvarMobilizacao()"><i class="fa-solid fa-truck-arrow-right"></i> Registrar
+                Mobilização</button>
+            <script>
+                // Função para salvar mobilização
+                function salvarMobilizacao() {
+                    const poco = document.getElementById('mobilizacaoPoco').value.trim();
+                    const atividade = document.getElementById('mobilizacaoAtividade').value.trim();
+                    const inicio = document.getElementById('mobilizacaoInicio').value.trim();
+                    const fim = document.getElementById('mobilizacaoFim').value.trim();
+                    if (!poco || !atividade || !inicio || !fim) {
+                        alert('Preencha todos os campos da mobilização!');
+                        return;
+                    }
+                    const mobilizacao = { poco, atividade, inicio, fim };
+                    localStorage.setItem('ucaq_mobilizacao', JSON.stringify(mobilizacao));
+                    renderMobilizacaoSalva();
+                    alert('Mobilização salva com sucesso!');
+                    // Limpar campos
+                    document.getElementById('mobilizacaoPoco').value = '';
+                    document.getElementById('mobilizacaoAtividade').value = '';
+                    document.getElementById('mobilizacaoInicio').value = '';
+                    document.getElementById('mobilizacaoFim').value = '';
+                }
+
+                // Função para exibir mobilização salva
+                function renderMobilizacaoSalva() {
+                    const div = document.getElementById('mobilizacaoSalva');
+                    div.innerHTML = '';
+                    const m = JSON.parse(localStorage.getItem('ucaq_mobilizacao'));
+                    if (m) {
+                        div.innerHTML = `
+                            <div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-top:10px;cursor:pointer;" onclick="preencherCamposMobilizacao()">
+                                <strong>Poço:</strong> ${m.poco}<br>
+                                <strong>Atividade:</strong> ${m.atividade}<br>
+                                <strong>Hora Início:</strong> ${m.inicio}<br>
+                                <strong>Hora Fim:</strong> ${m.fim}
+                                <div style='font-size:0.85em;color:#1976D2;margin-top:4px;'>Clique para preencher os campos</div>
+                            </div>
+                        `;
+                    }
+                }
+
+                // Preencher campos do formulário de mobilização
+                function preencherCamposMobilizacao() {
+                    const m = JSON.parse(localStorage.getItem('ucaq_mobilizacao'));
+                    if (m) {
+                        document.getElementById('mobilizacaoPoco').value = m.poco;
+                        document.getElementById('mobilizacaoAtividade').value = m.atividade;
+                        document.getElementById('mobilizacaoInicio').value = m.inicio;
+                        document.getElementById('mobilizacaoFim').value = m.fim;
+                    }
+                }
+
+                // Renderizar mobilização salva ao abrir tela Mobilização
+                document.addEventListener('DOMContentLoaded', function () {
+                    renderMobilizacaoSalva();
+                });
+            </script>
+            <script>
+                // Função para salvar mobilização
+                function salvarMobilizacao() {
+                    const poco = document.getElementById('mobilizacaoPoco').value.trim();
+                    const atividade = document.getElementById('mobilizacaoAtividade').value.trim();
+                    const inicio = document.getElementById('mobilizacaoInicio').value.trim();
+                    const fim = document.getElementById('mobilizacaoFim').value.trim();
+                    if (!poco || !atividade || !inicio || !fim) {
+                        alert('Preencha todos os campos da mobilização!');
+                        return;
+                    }
+                    const mobilizacao = { poco, atividade, inicio, fim };
+                    localStorage.setItem('ucaq_mobilizacao', JSON.stringify(mobilizacao));
+                    renderMobilizacaoSalva();
+                    alert('Mobilização salva com sucesso!');
+                    // Limpar campos
+                    document.getElementById('mobilizacaoPoco').value = '';
+                    document.getElementById('mobilizacaoAtividade').value = '';
+                    document.getElementById('mobilizacaoInicio').value = '';
+                    document.getElementById('mobilizacaoFim').value = '';
+                }
+
+                // Função para exibir mobilização salva
+                function renderMobilizacaoSalva() {
+                    const div = document.getElementById('mobilizacaoSalva');
+                    div.innerHTML = '';
+                    const m = JSON.parse(localStorage.getItem('ucaq_mobilizacao'));
+                    if (m) {
+                        div.innerHTML = `
+                            <div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-top:10px;cursor:pointer;" onclick="preencherCamposMobilizacao()">
+                                <strong>Poço:</strong> ${m.poco}<br>
+                                <strong>Atividade:</strong> ${m.atividade}<br>
+                                <strong>Hora Início:</strong> ${m.inicio}<br>
+                                <strong>Hora Fim:</strong> ${m.fim}
+                                <div style='font-size:0.85em;color:#1976D2;margin-top:4px;'>Clique para preencher os campos</div>
+                            </div>
+                        `;
+                    }
+                }
+
+                // Renderizar mobilização salva ao abrir tela Mobilização
+                document.addEventListener('DOMContentLoaded', function () {
+                    renderMobilizacaoSalva();
+                });
+            </script>
+            <div id="mobilizacaoSalva"></div>
+            <div class="mobile-nav-btns">
+                <button onclick="showScreen('aguardo')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+                <button onclick="showScreen('desmobilizacao')"><i class="fa-solid fa-arrow-right"></i> Próximo</button>
+            </div>
+        </div>
+
+        <!-- DesmobilizacaoScreen.js -->
+        <div id="desmobilizacao" class="screen">
+            <h1 class="header"><i class="fa-solid fa-truck-ramp-box"></i> Desmobilização</h1>
+            <div class="form-group">
+                <label>Nome do Poço</label>
+                <input id="desmobilizacaoPoco" placeholder="Ex: Pir-67">
+            </div>
+            <div class="form-group">
+                <label>Atividade</label>
+                <input id="desmobilizacaoAtividade" placeholder="Ex: Desmobilizando equipamentos">
+            </div>
+            <div class="form-group">
+                <label>Hora Início</label>
+                <input id="desmobilizacaoInicio" placeholder="Ex: 10:41">
+            </div>
+            <div class="form-group">
+                <label>Hora Fim</label>
+                <input id="desmobilizacaoFim" placeholder="Ex: 10:51">
+            </div>
+            <button onclick="alert('Funcionalidade de registrar desmobilização em desenvolvimento')"><i
+                    class="fa-solid fa-truck-arrow-left"></i> Registrar Desmobilização</button>
+            <script>
+                // Função para salvar desmobilização
+                function salvarDesmobilizacao() {
+                    const poco = document.getElementById('desmobilizacaoPoco').value.trim();
+                    const atividade = document.getElementById('desmobilizacaoAtividade').value.trim();
+                    const inicio = document.getElementById('desmobilizacaoInicio').value.trim();
+                    const fim = document.getElementById('desmobilizacaoFim').value.trim();
+                    if (!poco || !atividade || !inicio || !fim) {
+                        alert('Preencha todos os campos da desmobilização!');
+                        return;
+                    }
+                    const desmobilizacao = { poco, atividade, inicio, fim };
+                    localStorage.setItem('ucaq_desmobilizacao', JSON.stringify(desmobilizacao));
+                    renderDesmobilizacaoSalva();
+                    alert('Desmobilização salva com sucesso!');
+                    // Limpar campos
+                    document.getElementById('desmobilizacaoPoco').value = '';
+                    document.getElementById('desmobilizacaoAtividade').value = '';
+                    document.getElementById('desmobilizacaoInicio').value = '';
+                    document.getElementById('desmobilizacaoFim').value = '';
+                }
+
+                // Função para exibir desmobilização salva
+                function renderDesmobilizacaoSalva() {
+                    const div = document.getElementById('desmobilizacaoSalva');
+                    div.innerHTML = '';
+                    const d = JSON.parse(localStorage.getItem('ucaq_desmobilizacao'));
+                    if (d) {
+                        div.innerHTML = `
+                            <div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-top:10px;cursor:pointer;" onclick="preencherCamposDesmobilizacao()">
+                                <strong>Poço:</strong> ${d.poco}<br>
+                                <strong>Atividade:</strong> ${d.atividade}<br>
+                                <strong>Hora Início:</strong> ${d.inicio}<br>
+                                <strong>Hora Fim:</strong> ${d.fim}
+                                <div style='font-size:0.85em;color:#1976D2;margin-top:4px;'>Clique para preencher os campos</div>
+                            </div>
+                        `;
+                    }
+                }
+
+                // Preencher campos do formulário de desmobilização
+                function preencherCamposDesmobilizacao() {
+                    const d = JSON.parse(localStorage.getItem('ucaq_desmobilizacao'));
+                    if (d) {
+                        document.getElementById('desmobilizacaoPoco').value = d.poco;
+                        document.getElementById('desmobilizacaoAtividade').value = d.atividade;
+                        document.getElementById('desmobilizacaoInicio').value = d.inicio;
+                        document.getElementById('desmobilizacaoFim').value = d.fim;
+                    }
+                }
+
+                // Renderizar desmobilização salva ao abrir tela Desmobilização
+                document.addEventListener('DOMContentLoaded', function () {
+                    renderDesmobilizacaoSalva();
+                });
+            </script>
+            <div id="desmobilizacaoSalva"></div>
+            <div class="mobile-nav-btns">
+                <button onclick="showScreen('mobilizacao')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+                <button onclick="showScreen('abastecimento')"><i class="fa-solid fa-arrow-right"></i> Próximo</button>
+            </div>
+        </div>
+
+        <!-- AbastecimentoScreen.js -->
+        <div id="abastecimento" class="screen">
+            <h1 class="header"><i class="fa-solid fa-gas-pump"></i> Abastecimento</h1>
+            <div class="form-group">
+                <label>Nome do Poço</label>
+                <input id="abastecimentoPoco" placeholder="Ex: Pir-67">
+            </div>
+            <div class="form-group">
+                <label>Tipo de Abastecimento</label>
+                <select id="abastecimentoTipo">
+                    <option value="">Selecione</option>
+                    <option>Água</option>
+                    <option>Combustível</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Hora Início</label>
+                <input id="abastecimentoInicio" placeholder="Ex: 11:41">
+            </div>
+            <div class="form-group">
+                <label>Hora Fim</label>
+                <input id="abastecimentoFim" placeholder="Ex: 12:00">
+            </div>
+            <button onclick="salvarAbastecimento()"><i class="fa-solid fa-gas-pump"></i> Registrar
+                Abastecimento</button>
+            <script>
+                // Função para salvar abastecimento
+                function salvarAbastecimento() {
+                    const poco = document.getElementById('abastecimentoPoco').value.trim();
+                    const tipo = document.getElementById('abastecimentoTipo').value.trim();
+                    const inicio = document.getElementById('abastecimentoInicio').value.trim();
+                    const fim = document.getElementById('abastecimentoFim').value.trim();
+                    if (!poco || !tipo || !inicio || !fim) {
+                        alert('Preencha todos os campos do abastecimento!');
+                        return;
+                    }
+                    const abastecimento = { poco, tipo, inicio, fim };
+                    localStorage.setItem('ucaq_abastecimento', JSON.stringify(abastecimento));
+                    renderAbastecimentoSalvo();
+                    alert('Abastecimento salvo com sucesso!');
+                    // Limpar campos
+                    document.getElementById('abastecimentoPoco').value = '';
+                    document.getElementById('abastecimentoTipo').value = '';
+                    document.getElementById('abastecimentoInicio').value = '';
+                    document.getElementById('abastecimentoFim').value = '';
+                }
+
+                // Função para exibir abastecimento salvo
+                function renderAbastecimentoSalvo() {
+                    const div = document.getElementById('abastecimentoSalvo');
+                    div.innerHTML = '';
+                    const a = JSON.parse(localStorage.getItem('ucaq_abastecimento'));
+                    if (a) {
+                        div.innerHTML = `
+                            <div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-top:10px;cursor:pointer;" onclick="preencherCamposAbastecimento()">
+                                <strong>Poço:</strong> ${a.poco}<br>
+                                <strong>Tipo:</strong> ${a.tipo}<br>
+                                <strong>Hora Início:</strong> ${a.inicio}<br>
+                                <strong>Hora Fim:</strong> ${a.fim}
+                                <div style='font-size:0.85em;color:#1976D2;margin-top:4px;'>Clique para preencher os campos</div>
+                            </div>
+                        `;
+                    }
+                }
+
+                // Preencher campos do formulário de abastecimento
+                function preencherCamposAbastecimento() {
+                    const a = JSON.parse(localStorage.getItem('ucaq_abastecimento'));
+                    if (a) {
+                        document.getElementById('abastecimentoPoco').value = a.poco;
+                        document.getElementById('abastecimentoTipo').value = a.tipo;
+                        document.getElementById('abastecimentoInicio').value = a.inicio;
+                        document.getElementById('abastecimentoFim').value = a.fim;
+                    }
+                }
+
+                // Renderizar abastecimento salvo ao abrir tela Abastecimento
+                document.addEventListener('DOMContentLoaded', function () {
+                    renderAbastecimentoSalvo();
+                });
+            </script>
+            <script>
+                // Função para salvar abastecimento
+                function salvarAbastecimento() {
+                    const poco = document.getElementById('abastecimentoPoco').value.trim();
+                    const tipo = document.getElementById('abastecimentoTipo').value.trim();
+                    const inicio = document.getElementById('abastecimentoInicio').value.trim();
+                    const fim = document.getElementById('abastecimentoFim').value.trim();
+                    if (!poco || !tipo || !inicio || !fim) {
+                        alert('Preencha todos os campos do abastecimento!');
+                        return;
+                    }
+                    const abastecimento = { poco, tipo, inicio, fim };
+                    localStorage.setItem('ucaq_abastecimento', JSON.stringify(abastecimento));
+                    renderAbastecimentoSalvo();
+                    alert('Abastecimento salvo com sucesso!');
+                    // Limpar campos
+                    document.getElementById('abastecimentoPoco').value = '';
+                    document.getElementById('abastecimentoTipo').value = '';
+                    document.getElementById('abastecimentoInicio').value = '';
+                    document.getElementById('abastecimentoFim').value = '';
+                }
+
+                // Função para exibir abastecimento salvo
+                function renderAbastecimentoSalvo() {
+                    const div = document.getElementById('abastecimentoSalvo');
+                    div.innerHTML = '';
+                    const a = JSON.parse(localStorage.getItem('ucaq_abastecimento'));
+                    if (a) {
+                        div.innerHTML = `
+                            <div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-top:10px;cursor:pointer;" onclick="preencherCamposAbastecimento()">
+                                <strong>Poço:</strong> ${a.poco}<br>
+                                <strong>Tipo:</strong> ${a.tipo}<br>
+                                <strong>Hora Início:</strong> ${a.inicio}<br>
+                                <strong>Hora Fim:</strong> ${a.fim}
+                                <div style='font-size:0.85em;color:#1976D2;margin-top:4px;'>Clique para preencher os campos</div>
+                            </div>
+                        `;
+                    }
+                }
+
+                // Renderizar abastecimento salvo ao abrir tela Abastecimento
+                document.addEventListener('DOMContentLoaded', function () {
+                    renderAbastecimentoSalvo();
+                });
+            </script>
+            <div id="abastecimentoSalvo"></div>
+            <div class="mobile-nav-btns">
+                <button onclick="showScreen('desmobilizacao')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+                <button onclick="showScreen('repouso')"><i class="fa-solid fa-arrow-right"></i> Próximo</button>
+            </div>
+        </div>
+
+        <!-- RepousoScreen.js -->
+        <div id="repouso" class="screen">
+            <h1 class="header"><i class="fa-solid fa-utensils"></i> Alimentação</h1>
+            <div class="form-group">
+                <label>Nome do Poço</label>
+                <input id="repousoPoco" placeholder="Ex: Pir-67">
+            </div>
+            <div class="form-group">
+                <label>Motivo do Repouso</label>
+                <input id="repousoMotivo" value="Equipe em horário de almoço" readonly>
+            </div>
+            <div class="form-group">
+                <label>Hora Início</label>
+                <input id="repousoInicio" placeholder="Ex: 12:00">
+            </div>
+            <div class="form-group">
+                <label>Hora Fim</label>
+                <input id="repousoFim" placeholder="Ex: 13:00">
+            </div>
+            <button onclick="alert('Funcionalidade de registrar repouso em desenvolvimento')"><i
+                    class="fa-solid fa-bed"></i> Registrar Repouso</button>
+            <script>
+                // Função para salvar repouso
+                function salvarRepouso() {
+                    const poco = document.getElementById('repousoPoco').value.trim();
+                    const motivo = document.getElementById('repousoMotivo').value.trim();
+                    const inicio = document.getElementById('repousoInicio').value.trim();
+                    const fim = document.getElementById('repousoFim').value.trim();
+                    if (!poco || !motivo || !inicio || !fim) {
+                        alert('Preencha todos os campos do repouso!');
+                        return;
+                    }
+                    const repouso = { poco, motivo, inicio, fim };
+                    localStorage.setItem('ucaq_repouso', JSON.stringify(repouso));
+                    renderRepousoSalvo();
+                    alert('Repouso salvo com sucesso!');
+                    // Limpar campos
+                    document.getElementById('repousoPoco').value = '';
+                    // Motivo é readonly, não limpar
+                    document.getElementById('repousoInicio').value = '';
+                    document.getElementById('repousoFim').value = '';
+                }
+
+                // Função para exibir repouso salvo
+                function renderRepousoSalvo() {
+                    const div = document.getElementById('repousoSalvo');
+                    div.innerHTML = '';
+                    const r = JSON.parse(localStorage.getItem('ucaq_repouso'));
+                    if (r) {
+                        div.innerHTML = `
+                            <div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-top:10px;cursor:pointer;" onclick="preencherCamposRepouso()">
+                                <strong>Poço:</strong> ${r.poco}<br>
+                                <strong>Motivo:</strong> ${r.motivo}<br>
+                                <strong>Hora Início:</strong> ${r.inicio}<br>
+                                <strong>Hora Fim:</strong> ${r.fim}
+                                <div style='font-size:0.85em;color:#1976D2;margin-top:4px;'>Clique para preencher os campos</div>
+                            </div>
+                        `;
+                    }
+                }
+
+                // Preencher campos do formulário de repouso
+                function preencherCamposRepouso() {
+                    const r = JSON.parse(localStorage.getItem('ucaq_repouso'));
+                    if (r) {
+                        document.getElementById('repousoPoco').value = r.poco;
+                        document.getElementById('repousoMotivo').value = r.motivo;
+                        document.getElementById('repousoInicio').value = r.inicio;
+                        document.getElementById('repousoFim').value = r.fim;
+                    }
+                }
+
+                // Renderizar repouso salvo ao abrir tela Repouso
+                document.addEventListener('DOMContentLoaded', function () {
+                    renderRepousoSalvo();
+                });
+            </script>
+            <div id="repousoSalvo"></div>
+            <div class="mobile-nav-btns">
+                <button onclick="showScreen('abastecimento')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+                <button onclick="showScreen('relatorio')"><i class="fa-solid fa-arrow-right"></i> Próximo</button>
+            </div>
+        </div>
+
+        <!-- RelatorioScreen.js -->
+        <div id="relatorio" class="screen">
+            <h1 class="header"><i class="fa-solid fa-file-lines"></i> Relatório</h1>
+            <div id="relatorioConteudo"></div>
+            <script>
+                window.renderRelatorio = function renderRelatorio() {
+                    // Carregar dados
+                    const equipe = JSON.parse(localStorage.getItem('ucaq_equipe'));
+                    const desloc = JSON.parse(localStorage.getItem('ucaq_deslocamento'));
+                    const operacao = JSON.parse(localStorage.getItem('ucaq_operacao'));
+                    const aguardo = JSON.parse(localStorage.getItem('ucaq_aguardo'));
+                    const mobilizacao = JSON.parse(localStorage.getItem('ucaq_mobilizacao'));
+                    const desmobilizacao = JSON.parse(localStorage.getItem('ucaq_desmobilizacao'));
+                    const abastecimento = JSON.parse(localStorage.getItem('ucaq_abastecimento'));
+                    const repouso = JSON.parse(localStorage.getItem('ucaq_repouso'));
+
+                    let html = '';
+                    html += `<div style='margin-top:10px;'>`;
+                    // Card Equipe
+                    if (equipe) {
+                        html += `<div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+                            <strong>Equipe</strong><br>
+                            <strong>Operador:</strong> ${equipe.operador}<br>
+                            <strong>Auxiliar:</strong> ${equipe.auxiliar}<br>
+                            <strong>Data:</strong> ${equipe.data ? equipe.data.split('-').reverse().join('/') : ''}<br>
+                            <strong>Poço:</strong> ${equipe.poco}
+                        </div>`;
+                    }
+                    // Card Deslocamento
+                    if (desloc) {
+                        html += `<div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+                            <strong>Deslocamento</strong><br>
+                            <strong>Poço:</strong> ${desloc.poco}<br>
+                            <strong>Origem:</strong> ${desloc.origem}<br>
+                            <strong>Destino:</strong> ${desloc.destino}<br>
+                            <strong>Hora Inicial:</strong> ${desloc.inicio}<br>
+                            <strong>Hora Final:</strong> ${desloc.fim}<br>
+                            <strong>KM Inicial:</strong> ${desloc.kmInicio}<br>
+                            <strong>KM Final:</strong> ${desloc.kmFim}<br>
+                            <strong>KM Percorrido:</strong> ${!isNaN(parseFloat(desloc.kmInicio)) && !isNaN(parseFloat(desloc.kmFim)) ? (parseFloat(desloc.kmFim) - parseFloat(desloc.kmInicio)).toFixed(2) + ' km' : ''}
+                        </div>`;
+                    }
+                    // Card Operação
+                    if (operacao) {
+                        html += `<div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+                            <strong>Operações</strong><br>
+                            <strong>Poço:</strong> ${operacao.poco}<br>
+                            <strong>Atividade:</strong> ${operacao.atividade}<br>
+                            <strong>Hora Início:</strong> ${operacao.inicio}<br>
+                            <strong>Hora Fim:</strong> ${operacao.fim}<br>
+                            <strong>Volume:</strong> ${operacao.volume ? operacao.volume + ' bbl' : '-'}<br>
+                            <strong>Temperatura:</strong> ${operacao.temperatura ? operacao.temperatura + ' °C' : '-'}<br>
+                            <strong>Pressão:</strong> ${operacao.pressao ? operacao.pressao + ' psi' : '-'}
+                        </div>`;
+                    }
+                    // Card Aguardo
+                    if (aguardo) {
+                        html += `<div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+                            <strong>Aguardo</strong><br>
+                            <strong>Poço:</strong> ${aguardo.poco}<br>
+                            <strong>Hora Início:</strong> ${aguardo.inicio}<br>
+                            <strong>Hora Fim:</strong> ${aguardo.fim}<br>
+                            <strong>Tempo Aguardando:</strong> ${aguardo.tempoAguardando || '-'}<br>
+                            <strong>Motivação:</strong> ${aguardo.motivo}
+                        </div>`;
+                    }
+                    // Card Mobilização
+                    if (mobilizacao) {
+                        html += `<div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+                            <strong>Mobilização</strong><br>
+                            <strong>Poço:</strong> ${mobilizacao.poco}<br>
+                            <strong>Hora Início:</strong> ${mobilizacao.inicio}<br>
+                            <strong>Hora Fim:</strong> ${mobilizacao.fim}<br>
+                            <strong>Atividade:</strong> ${mobilizacao.atividade}
+                        </div>`;
+                    }
+                    // Card Desmobilização
+                    if (desmobilizacao) {
+                        html += `<div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+                            <strong>Desmobilização</strong><br>
+                            <strong>Poço:</strong> ${desmobilizacao.poco}<br>
+                            <strong>Hora Início:</strong> ${desmobilizacao.inicio}<br>
+                            <strong>Hora Fim:</strong> ${desmobilizacao.fim}<br>
+                            <strong>Atividade:</strong> ${desmobilizacao.atividade}
+                        </div>`;
+                    }
+                    // Card Abastecimento
+                    if (abastecimento) {
+                        html += `<div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+                            <strong>Abastecimento</strong><br>
+                            <strong>Poço:</strong> ${abastecimento.poco}<br>
+                            <strong>Tipo:</strong> ${abastecimento.tipo}<br>
+                            <strong>Hora Início:</strong> ${abastecimento.inicio}<br>
+                            <strong>Hora Fim:</strong> ${abastecimento.fim}
+                        </div>`;
+                    }
+                    // Card Repouso
+                    if (repouso) {
+                        html += `<div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+                            <strong>Repouso</strong><br>
+                            <strong>Hora Início:</strong> ${repouso.inicio}<br>
+                            <strong>Hora Fim:</strong> ${repouso.fim}<br>
+                            <strong>Motivo:</strong> ${repouso.motivo}
+                        </div>`;
+                    }
+                    html += `</div>`;
+                    // Botão compartilhar
+                    html += `<div style="text-align:center; margin: 18px 0;">
+                        <button
+                            style="background:#1976D2;color:#fff;padding:10px 24px;border:none;border-radius:6px;font-size:1rem;cursor:pointer;min-width:180px;"
+                            onclick="compartilharRelatorio()">
+                            <i class='fa-solid fa-share-nodes'></i> Compartilhar Relatório
+                        </button>
+                    </div>`;
+                    var relatorioDiv = document.getElementById('relatorioConteudo');
+                    if (relatorioDiv) {
+                        relatorioDiv.innerHTML = html;
+                    }
+                    // Função de compartilhamento
+                    window.compartilharRelatorio = function () {
+                        // Montar texto WhatsApp (usado para ambos)
+                        let textoWpp = '*Relatório de Operação Ucaq*\n\n';
+                        const equipe = JSON.parse(localStorage.getItem('ucaq_equipe'));
+                        if (equipe) {
+                            textoWpp += `*Equipe*\nOperador: ${equipe.operador}\nAuxiliar: ${equipe.auxiliar}\nData: ${equipe.data ? equipe.data.split('-').reverse().join('/') : ''}\nPoço: ${equipe.poco}\n\n`;
+                        }
+                        const desloc = JSON.parse(localStorage.getItem('ucaq_deslocamento'));
+                        if (desloc) {
+                            let kmPercorrido = '';
+                            if (!isNaN(parseFloat(desloc.kmInicio)) && !isNaN(parseFloat(desloc.kmFim))) {
+                                kmPercorrido = (parseFloat(desloc.kmFim) - parseFloat(desloc.kmInicio)).toFixed(2) + ' km';
+                            }
+                            textoWpp += `*Deslocamento*\nPoço: ${desloc.poco}\nOrigem: ${desloc.origem}\nDestino: ${desloc.destino}\nHora Inicial: ${desloc.inicio}\nHora Final: ${desloc.fim}\nKM Inicial: ${desloc.kmInicio}\nKM Final: ${desloc.kmFim}\nKM Percorrido: ${kmPercorrido}\n\n`;
+                        }
+                        const operacao = JSON.parse(localStorage.getItem('ucaq_operacao'));
+                        if (operacao) {
+                            textoWpp += `*Operações*\nPoço: ${operacao.poco}\nAtividade: ${operacao.atividade}\nHora Início: ${operacao.inicio}\nHora Fim: ${operacao.fim}\nVolume: ${operacao.volume ? operacao.volume + ' bbl' : '-'}\nTemperatura: ${operacao.temperatura ? operacao.temperatura + ' °C' : '-'}\nPressão: ${operacao.pressao ? operacao.pressao + ' psi' : '-'}\n\n`;
+                        }
+                        const aguardo = JSON.parse(localStorage.getItem('ucaq_aguardo'));
+                        if (aguardo) {
+                            textoWpp += `*Aguardo*\nPoço: ${aguardo.poco}\nHora Início: ${aguardo.inicio}\nHora Fim: ${aguardo.fim}\nTempo Aguardando: ${aguardo.tempoAguardando || '-'}\nMotivação: ${aguardo.motivo}\n\n`;
+                        }
+                        const mobilizacao = JSON.parse(localStorage.getItem('ucaq_mobilizacao'));
+                        if (mobilizacao) {
+                            textoWpp += `*Mobilização*\nPoço: ${mobilizacao.poco}\nHora Início: ${mobilizacao.inicio}\nHora Fim: ${mobilizacao.fim}\nFrase: ${mobilizacao.atividade}\n\n`;
+                        }
+                        const desmobilizacao = JSON.parse(localStorage.getItem('ucaq_desmobilizacao'));
+                        if (desmobilizacao) {
+                            textoWpp += `*Desmobilização*\nPoço: ${desmobilizacao.poco}\nHora Início: ${desmobilizacao.inicio}\nHora Fim: ${desmobilizacao.fim}\nFrase: ${desmobilizacao.atividade}\n\n`;
+                        }
+                        const abastecimento = JSON.parse(localStorage.getItem('ucaq_abastecimento'));
+                        if (abastecimento) {
+                            textoWpp += `*Abastecimento*\nPoço: ${abastecimento.poco}\nHora Início: ${abastecimento.inicio}\nHora Fim: ${abastecimento.fim}\nTipo: ${abastecimento.tipo}\n\n`;
+                        }
+                        const repouso = JSON.parse(localStorage.getItem('ucaq_repouso'));
+                        if (repouso) {
+                            textoWpp += `*Repouso*\nHora Início: ${repouso.inicio}\nHora Fim: ${repouso.fim}\nFrase: ${repouso.motivo}\n\n`;
+                        }
+                        // Exibir opções de compartilhamento
+                        let opcoes = document.createElement('div');
+                        opcoes.style.position = 'fixed';
+                        opcoes.style.left = '0';
+                        opcoes.style.top = '0';
+                        opcoes.style.width = '100vw';
+                        opcoes.style.height = '100vh';
+                        opcoes.style.background = 'rgba(0,0,0,0.35)';
+                        opcoes.style.display = 'flex';
+                        opcoes.style.alignItems = 'center';
+                        opcoes.style.justifyContent = 'center';
+                        opcoes.style.zIndex = '9999';
+                        opcoes.innerHTML = `
+                            <div style='background:#fff;padding:28px 22px 18px 22px;border-radius:12px;box-shadow:0 2px 16px #0002;min-width:260px;text-align:center;'>
+                                <div style='font-size:1.2em;font-weight:bold;margin-bottom:18px;'>Compartilhar Relatório</div>
+                                <button id='btnWhatsapp' style='background:#25D366;color:#fff;padding:10px 18px;border:none;border-radius:6px;font-size:1rem;cursor:pointer;margin-bottom:10px;width:100%;'><i class='fa-brands fa-whatsapp'></i> WhatsApp</button><br>
+                                <button id='btnEmail' style='background:#1976D2;color:#fff;padding:10px 18px;border:none;border-radius:6px;font-size:1rem;cursor:pointer;width:100%;'><i class='fa-solid fa-envelope'></i> E-mail</button><br>
+                                <button id='btnCancelar' style='margin-top:16px;background:#eee;color:#333;padding:8px 18px;border:none;border-radius:6px;font-size:1rem;cursor:pointer;width:100%;'>Cancelar</button>
+                            </div>
+                        `;
+                        document.body.appendChild(opcoes);
+                        // WhatsApp
+                        var btnWpp = document.getElementById('btnWhatsapp');
+                        if (btnWpp) {
+                            btnWpp.onclick = function () {
+                                window.open('https://wa.me/?text=' + encodeURIComponent(textoWpp), '_blank');
+                                document.body.removeChild(opcoes);
+                            };
+                        }
+                        // E-mail
+                        var btnEmail = document.getElementById('btnEmail');
+                        if (btnEmail) {
+                            btnEmail.onclick = function () {
+                                let assunto = encodeURIComponent('Relatório de Operações');
+                                let corpo = encodeURIComponent(textoWpp);
+                                window.open('mailto:?subject=' + assunto + '&body=' + corpo, '_blank');
+                                document.body.removeChild(opcoes);
+                            };
+                        }
+                        // Cancelar
+                        var btnCancelar = document.getElementById('btnCancelar');
+                        if (btnCancelar) {
+                            btnCancelar.onclick = function () {
+                                document.body.removeChild(opcoes);
+                            };
+                        }
+                    };
+                };
+                // Renderizar relatório ao abrir tela Relatório
+                document.addEventListener('DOMContentLoaded', function () {
+                    if (document.getElementById('relatorioConteudo')) {
+                        window.renderRelatorio();
+                    }
+                });
+                // Também renderizar ao mostrar a tela de relatório
+                (function () {
+                    var oldShowScreen = window.showScreen;
+                    window.showScreen = function (screen) {
+                        if (typeof oldShowScreen === 'function') oldShowScreen(screen);
+                        if (screen === 'relatorio' && document.getElementById('relatorioConteudo')) {
+                            window.renderRelatorio();
+                        }
+                    };
+                })();
+            </script>
+        </div>
+
+        <!-- AddRecordScreen.js -->
+        <div id="addLog" class="screen">
+            <h1 class="header"><i class="fa-solid fa-plus"></i> Adicionar Registro</h1>
+            <div class="form-group">
+                <label>Equipe</label>
+                <input id="team" placeholder="Ex: Pedro e José">
+            </div>
+            <div class="form-group">
+                <label>Data</label>
+                <input id="date" placeholder="Ex: 18/07/2025">
+            </div>
+            <div class="form-group">
+                <label>Poço</label>
+                <input id="well" placeholder="Ex: Pir-67">
+            </div>
+            <div class="form-group">
+                <label>Status</label>
+                <input id="status" placeholder="Ex: Operando">
+            </div>
+            <div class="form-group">
+                <label>Atividade</label>
+                <input id="activity" placeholder="Ex: Injeção na coluna">
+            </div>
+            <div class="form-group">
+                <label>Hora Início</label>
+                <input id="startTime" placeholder="Ex: 10:23">
+            </div>
+            <div class="form-group">
+                <label>Hora Fim</label>
+                <input id="endTime" placeholder="Ex: 10:41">
+            </div>
+            <div class="form-group">
+                <label>Volume (opcional)</label>
+                <input id="volume" placeholder="Ex: 5bbl">
+            </div>
+            <div class="form-group">
+                <label>Ângulo (opcional)</label>
+                <input id="angle" placeholder="Ex: 30°">
+            </div>
+            <div class="form-group">
+                <label>Pressão (opcional)</label>
+                <input id="pressure" placeholder="Ex: 650psi">
+            </div>
+            <div class="form-group">
+                <label>Odômetro Início (opcional)</label>
+                <input id="odometerStart" placeholder="Ex: 193335">
+            </div>
+            <div class="form-group">
+                <label>Odômetro Fim (opcional)</label>
+                <input id="odometerEnd" placeholder="Ex: 193341">
+            </div>
+            <button onclick="addLog()"><i class="fa-solid fa-save"></i> Salvar Registro</button>
+        </div>
+
+        <!-- DetailsScreen.js -->
+        <div id="details" class="screen">
+            <h1 class="header"><i class="fa-solid fa-magnifying-glass"></i> Detalhes do Registro</h1>
+            <div id="detailsContent"></div>
+            <button onclick="showScreen('home')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        </div>
+    </div>
+    <script src="main.js"></script>
+    <script>
+        // Substituir o onclick dos botões por suas funções
+        document.addEventListener('DOMContentLoaded', function () {
+            var btn = document.querySelector('#equipe .fa-user-plus').parentElement;
+            btn.onclick = salvarEquipe;
+            // Substituir o onclick do botão de deslocamento
+            var btnDesloc = document.querySelector('#deslocamento .fa-location-arrow').parentElement;
+            btnDesloc.onclick = salvarDeslocamento;
+            // Substituir o onclick do botão de operação
+            var btnOperacao = document.querySelector('#operacoes .fa-plus').parentElement;
+            btnOperacao.onclick = salvarOperacao;
+            // Substituir o onclick do botão de aguardo
+            var btnAguardo = document.querySelector('#aguardo .fa-hourglass-half').parentElement;
+            btnAguardo.onclick = salvarAguardo;
+            // Substituir o onclick do botão de mobilização
+            var btnMobilizacao = document.querySelector('#mobilizacao .fa-truck-arrow-right').parentElement;
+            btnMobilizacao.onclick = salvarMobilizacao;
+            // Substituir o onclick do botão de desmobilização
+            var btnDesmobilizacao = document.querySelector('#desmobilizacao .fa-truck-arrow-left').parentElement;
+            btnDesmobilizacao.onclick = salvarDesmobilizacao;
+            // Substituir o onclick do botão de abastecimento
+            var btnAbastecimento = document.querySelector('#abastecimento .fa-gas-pump').parentElement;
+            btnAbastecimento.onclick = salvarAbastecimento;
+            // Substituir o onclick do botão de repouso
+            var btnRepouso = document.querySelector('#repouso .fa-bed').parentElement;
+            btnRepouso.onclick = salvarRepouso;
+        });
+    </script>
+</body>
+
+</html>
