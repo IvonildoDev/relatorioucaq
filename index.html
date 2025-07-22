@@ -921,6 +921,38 @@
         </div>
 
         <!-- RelatorioScreen.js -->
+        <!-- SobreScreen.js -->
+        <div id="sobre" class="screen">
+            <h1 class="header"><i class="fa-solid fa-circle-info"></i> Sobre o Sistema</h1>
+            <div
+                style="background:#f5f5f5;padding:18px 16px;border-radius:10px;margin-bottom:18px;line-height:1.7;font-size:1.08em;">
+                <strong>Relatório de Operações UCAQ</strong> é um sistema web desenvolvido para facilitar o registro,
+                acompanhamento e compartilhamento das operações diárias de campo da unidade UCAQ.<br><br>
+                <b>Como usar:</b><br>
+                <ul style="margin-left:18px;">
+                    <li>Preencha cada etapa do processo (Equipe, Deslocamento, Operações, Aguardo, Mobilização,
+                        Desmobilização, Abastecimento, Repouso) conforme for realizando as atividades.</li>
+                    <li>Os dados ficam salvos no seu navegador e podem ser revisados a qualquer momento.</li>
+                    <li>Ao final, acesse a tela <b>Relatório</b> para visualizar todos os dados organizados em cards.
+                    </li>
+                    <li>Use o botão <b>Compartilhar Relatório</b> para enviar o resumo das operações por WhatsApp ou
+                        E-mail, no formato pronto para envio.</li>
+                </ul>
+                <b>Principais recursos:</b>
+                <ul style="margin-left:18px;">
+                    <li>Interface simples e adaptada para dispositivos móveis.</li>
+                    <li>Preenchimento rápido e navegação entre etapas.</li>
+                    <li>Compartilhamento fácil do relatório final.</li>
+                </ul>
+                <div style="margin-top:18px;font-size:1.1em;color:#1976D2;"><b>Desenvolvido por Ivonildo Lima</b></div>
+            </div>
+            <div style="text-align:center;">
+                <button onclick="showScreen('home')"
+                    style="background:#1976D2;color:#fff;padding:10px 24px;border:none;border-radius:6px;font-size:1rem;cursor:pointer;min-width:160px;">
+                    <i class="fa-solid fa-arrow-left"></i> Voltar
+                </button>
+            </div>
+        </div>
         <div id="relatorio" class="screen">
             <h1 class="header"><i class="fa-solid fa-file-lines"></i> Relatório</h1>
             <div id="relatorioConteudo"></div>
@@ -1204,6 +1236,13 @@
             <h1 class="header"><i class="fa-solid fa-magnifying-glass"></i> Detalhes do Registro</h1>
             <div id="detailsContent"></div>
             <button onclick="showScreen('home')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        </div>
+        <!-- Botão para acessar Sobre (opcional, pode ser colocado no menu ou rodapé) -->
+        <div style="position:fixed;right:18px;bottom:18px;z-index:1000;">
+            <button onclick="showScreen('sobre')" title="Sobre o sistema"
+                style="background:#1976D2;color:#fff;padding:10px 18px;border:none;border-radius:50%;font-size:1.3em;box-shadow:0 2px 8px #0002;cursor:pointer;">
+                <i class="fa-solid fa-circle-info"></i>
+            </button>
         </div>
     </div>
     <script src="main.js"></script>
