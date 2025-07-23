@@ -398,14 +398,9 @@
                             alert('Informe o nome do poço para cancelar a operação!');
                             return;
                         }
+                        // Salva operação cancelada no localStorage
                         const operacaoCancelada = {
                             poco: poco,
-                            atividade: '---',
-                            inicio: '',
-                            fim: '',
-                            volume: '',
-                            temperatura: '',
-                            pressao: '',
                             status: 'Operação Cancelada'
                         };
                         localStorage.setItem('ucaq_operacao', JSON.stringify(operacaoCancelada));
@@ -427,19 +422,28 @@
                         div.innerHTML = '';
                         const o = JSON.parse(localStorage.getItem('ucaq_operacao'));
                         if (o) {
-                            div.innerHTML = `
-                                <div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-top:10px;cursor:pointer;" onclick="preencherCamposOperacao()">
-                                    <strong>Poço:</strong> ${o.poco}<br>
-                                    <strong>Status:</strong> ${o.status ? o.status : 'Normal'}<br>
-                                    <strong>Atividade:</strong> ${o.atividade}<br>
-                                    <strong>Hora Início:</strong> ${o.inicio}<br>
-                                    <strong>Hora Fim:</strong> ${o.fim}<br>
-                                    <strong>Volume:</strong> ${o.volume ? o.volume + ' bbl' : '-'}<br>
-                                    <strong>Temperatura:</strong> ${o.temperatura ? o.temperatura + ' °C' : '-'}<br>
-                                    <strong>Pressão:</strong> ${o.pressao ? o.pressao + ' psi' : '-'}
-                                    <div style='font-size:0.85em;color:#1976D2;margin-top:4px;'>Clique para preencher os campos</div>
-                                </div>
-                            `;
+                            if (o.status === 'Operação Cancelada') {
+                                div.innerHTML = `
+                                    <div class="equipe-card" style="background:#ffeaea;padding:10px 14px;border-radius:8px;margin-top:10px;">
+                                        <strong style='color:#e53935;'>Operação cancelada</strong><br>
+                                        <strong>Poço:</strong> ${o.poco}
+                                    </div>
+                                `;
+                            } else {
+                                div.innerHTML = `
+                                    <div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-top:10px;cursor:pointer;" onclick="preencherCamposOperacao()">
+                                        <strong>Poço:</strong> ${o.poco}<br>
+                                        <strong>Status:</strong> ${o.status ? o.status : 'Normal'}<br>
+                                        <strong>Atividade:</strong> ${o.atividade}<br>
+                                        <strong>Hora Início:</strong> ${o.inicio}<br>
+                                        <strong>Hora Fim:</strong> ${o.fim}<br>
+                                        <strong>Volume:</strong> ${o.volume ? o.volume + ' bbl' : '-'}<br>
+                                        <strong>Temperatura:</strong> ${o.temperatura ? o.temperatura + ' °C' : '-'}<br>
+                                        <strong>Pressão:</strong> ${o.pressao ? o.pressao + ' psi' : '-'}
+                                        <div style='font-size:0.85em;color:#1976D2;margin-top:4px;'>Clique para preencher os campos</div>
+                                    </div>
+                                `;
+                            }
                         }
                     }
 
