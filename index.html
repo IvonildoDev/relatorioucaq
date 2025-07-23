@@ -83,27 +83,24 @@
                     const div = document.getElementById('ultimoRegistroCard');
                     if (!div) return;
                     // Busca o último registro salvo (addLog)
-                    const reg = JSON.parse(localStorage.getItem('ucaq_ultimo_log'));
-                    if (reg) {
+                    // Tenta buscar a última operação salva
+                    const operacao = JSON.parse(localStorage.getItem('ucaq_operacao'));
+                    if (operacao) {
                         div.innerHTML = `
-                        <div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin:14px 0 0 0;">
-                            <strong>Último Registro</strong><br>
-                            <strong>Equipe:</strong> ${reg.team || '-'}<br>
-                            <strong>Data:</strong> ${reg.date || '-'}<br>
-                            <strong>Poço:</strong> ${reg.well || '-'}<br>
-                            <strong>Status:</strong> ${reg.status || '-'}<br>
-                            <strong>Atividade:</strong> ${reg.activity || '-'}<br>
-                            <strong>Hora Início:</strong> ${reg.startTime || '-'}<br>
-                            <strong>Hora Fim:</strong> ${reg.endTime || '-'}<br>
-                            <strong>Volume:</strong> ${reg.volume || '-'}<br>
-                            <strong>Ângulo:</strong> ${reg.angle || '-'}<br>
-                            <strong>Pressão:</strong> ${reg.pressure || '-'}<br>
-                            <strong>Odômetro Início:</strong> ${reg.odometerStart || '-'}<br>
-                            <strong>Odômetro Fim:</strong> ${reg.odometerEnd || '-'}
+                        <div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin:14px 0 0 0;box-shadow:0 1px 4px #0001;">
+                            <strong>Última Operação</strong><br>
+                            <strong>Poço:</strong> ${operacao.poco || '-'}<br>
+                            <strong>Status:</strong> ${operacao.status ? operacao.status : 'Normal'}<br>
+                            <strong>Serviço:</strong> ${operacao.atividade || '-'}<br>
+                            <strong>Hora Início:</strong> ${operacao.inicio || '-'}<br>
+                            <strong>Hora Fim:</strong> ${operacao.fim || '-'}<br>
+                            <strong>Volume:</strong> ${operacao.volume ? operacao.volume + ' bbl' : '-'}<br>
+                            <strong>Temperatura:</strong> ${operacao.temperatura ? operacao.temperatura + ' °C' : '-'}<br>
+                            <strong>Pressão:</strong> ${operacao.pressao ? operacao.pressao + ' psi' : '-'}
                         </div>
-                    `;
+                        `;
                     } else {
-                        div.innerHTML = `<div style='color:#888;font-size:1em;margin:14px 0 0 0;'>Nenhum registro salvo ainda.</div>`;
+                        div.innerHTML = `<div style='color:#888;font-size:1em;margin:14px 0 0 0;'>Nenhuma operação salva ainda.</div>`;
                     }
                 }
                 // Renderizar ao abrir Home
@@ -328,9 +325,11 @@
                     <select id="operacaoAtividade">
                         <option value="">Selecione um serviço</option>
                         <option>Deslocamento de Pig</option>
-                        <option>Desparafinação térmica</option>
+                        <option>Desparafinação térmica na coluna</option>
+                        <option>Desparafinação térmica na linha de produção</option>
+
                         <option>Preenchimento de linha</option>
-                        <option>Deslocamento de Pig e térmica na linha</option>
+                        <option>Deslocamento de Pig e térmica na linha </option>
                         <option>Limpeza</option>
                         <option>Teste de estanquidade</option>
                         <option>Teste hidrostático</option>
