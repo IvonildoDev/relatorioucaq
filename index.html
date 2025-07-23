@@ -324,9 +324,9 @@
                     <input id="operacaoPoco" placeholder="Ex: Pir-67">
                 </div>
                 <div class="form-group">
-                    <label>Atividade</label>
+                    <label>Serviço</label>
                     <select id="operacaoAtividade">
-                        <option value="">Selecione uma atividade</option>
+                        <option value="">Selecione um serviço</option>
                         <option>Deslocamento de Pig</option>
                         <option>Desparafinação térmica</option>
                         <option>Preenchimento de linha</option>
@@ -337,6 +337,7 @@
                         <option>Preenchimento de coluna</option>
                         <option>Injeção na coluna</option>
                         <option>Apoio a slickline</option>
+                        <option>Serviço cancelado</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -360,8 +361,6 @@
                     <input id="operacaoPressao" placeholder="Ex: 650">
                 </div>
                 <button onclick="salvarOperacao()"><i class="fa-solid fa-plus"></i> Registrar Operação</button>
-                <button id="btnOperacaoCancelada" style="background:#e53935;color:#fff;margin-top:10px;"
-                    onclick="registrarOperacaoCancelada()"><i class="fa-solid fa-ban"></i> Operação Cancelada</button>
                 <script>
 
                     // Função para salvar operação
@@ -1036,9 +1035,10 @@
         <div id="relatorio" class="screen">
             <h1 class="header"><i class="fa-solid fa-file-lines"></i> Relatório</h1>
             <div id="relatorioConteudo"></div>
-            <div style="text-align:center; margin: 0 0 24px 0;">
+            <div
+                style="text-align:center; margin: 0 0 24px 0; display: flex; flex-direction: column; align-items: center; gap: 8px;">
                 <button id="btnLimparRelatorio"
-                    style="background:#e53935;color:#fff;padding:8px 20px;border:none;border-radius:6px;font-size:1rem;cursor:pointer;min-width:160px;margin-bottom:12px;">
+                    style="background:#e53935;color:#fff;padding:8px 20px;border:none;border-radius:6px;font-size:1rem;cursor:pointer;min-width:160px;">
                     <i class="fa-solid fa-trash"></i> Limpar Relatório
                 </button>
             </div>
@@ -1054,11 +1054,14 @@
                     const abastecimento = JSON.parse(localStorage.getItem('ucaq_abastecimento'));
                     const repouso = JSON.parse(localStorage.getItem('ucaq_repouso'));
 
+                    // Estilo inline para os cards (garante formatação no PDF)
+                    const cardStyle = "background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;box-sizing:border-box;font-size:1.05em;line-height:1.6;box-shadow:0 1px 4px #0001;";
+
                     let html = '';
                     html += `<div style='margin-top:10px;'>`;
                     // Card Equipe
                     if (equipe) {
-                        html += `<div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+                        html += `<div style='${cardStyle}'>
                             <strong>Equipe</strong><br>
                             <strong>Operador:</strong> ${equipe.operador}<br>
                             <strong>Auxiliar:</strong> ${equipe.auxiliar}<br>
@@ -1068,7 +1071,7 @@
                     }
                     // Card Deslocamento
                     if (desloc) {
-                        html += `<div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+                        html += `<div style='${cardStyle}'>
                             <strong>Deslocamento</strong><br>
                             <strong>Poço:</strong> ${desloc.poco}<br>
                             <strong>Origem:</strong> ${desloc.origem}<br>
@@ -1082,7 +1085,7 @@
                     }
                     // Card Operação
                     if (operacao) {
-                        html += `<div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+                        html += `<div style='${cardStyle}'>
                             <strong>Operações</strong><br>
                             <strong>Poço:</strong> ${operacao.poco}<br>
                             <strong>Status:</strong> ${operacao.status ? operacao.status : 'Normal'}<br>
@@ -1096,7 +1099,7 @@
                     }
                     // Card Aguardo
                     if (aguardo) {
-                        html += `<div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+                        html += `<div style='${cardStyle}'>
                             <strong>Aguardo</strong><br>
                             <strong>Poço:</strong> ${aguardo.poco}<br>
                             <strong>Hora Início:</strong> ${aguardo.inicio}<br>
@@ -1107,7 +1110,7 @@
                     }
                     // Card Mobilização
                     if (mobilizacao) {
-                        html += `<div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+                        html += `<div style='${cardStyle}'>
                             <strong>Mobilização</strong><br>
                             <strong>Poço:</strong> ${mobilizacao.poco}<br>
                             <strong>Hora Início:</strong> ${mobilizacao.inicio}<br>
@@ -1117,7 +1120,7 @@
                     }
                     // Card Desmobilização
                     if (desmobilizacao) {
-                        html += `<div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+                        html += `<div style='${cardStyle}'>
                             <strong>Desmobilização</strong><br>
                             <strong>Poço:</strong> ${desmobilizacao.poco}<br>
                             <strong>Hora Início:</strong> ${desmobilizacao.inicio}<br>
@@ -1127,7 +1130,7 @@
                     }
                     // Card Abastecimento
                     if (abastecimento) {
-                        html += `<div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+                        html += `<div style='${cardStyle}'>
                             <strong>Abastecimento</strong><br>
                             <strong>Poço:</strong> ${abastecimento.poco}<br>
                             <strong>Tipo:</strong> ${abastecimento.tipo}<br>
@@ -1137,7 +1140,7 @@
                     }
                     // Card Repouso
                     if (repouso) {
-                        html += `<div class="equipe-card" style="background:#f5f5f5;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+                        html += `<div style='${cardStyle}'>
                             <strong>Repouso</strong><br>
                             <strong>Hora Início:</strong> ${repouso.inicio}<br>
                             <strong>Hora Fim:</strong> ${repouso.fim}<br>
@@ -1183,11 +1186,11 @@
                         }
                         const mobilizacao = JSON.parse(localStorage.getItem('ucaq_mobilizacao'));
                         if (mobilizacao) {
-                            textoWpp += `*Mobilização*\nPoço: ${mobilizacao.poco}\nHora Início: ${mobilizacao.inicio}\nHora Fim: ${mobilizacao.fim}\nFrase: ${mobilizacao.atividade}\n\n`;
+                            textoWpp += `*Mobilização*\nPoço: ${mobilizacao.poco}\nHora Início: ${mobilizacao.inicio}\nHora Fim: ${mobilizacao.fim}\nAtividade: ${mobilizacao.atividade}\n\n`;
                         }
                         const desmobilizacao = JSON.parse(localStorage.getItem('ucaq_desmobilizacao'));
                         if (desmobilizacao) {
-                            textoWpp += `*Desmobilização*\nPoço: ${desmobilizacao.poco}\nHora Início: ${desmobilizacao.inicio}\nHora Fim: ${desmobilizacao.fim}\nFrase: ${desmobilizacao.atividade}\n\n`;
+                            textoWpp += `*Desmobilização*\nPoço: ${desmobilizacao.poco}\nHora Início: ${desmobilizacao.inicio}\nHora Fim: ${desmobilizacao.fim}\nAtividade: ${desmobilizacao.atividade}\n\n`;
                         }
                         const abastecimento = JSON.parse(localStorage.getItem('ucaq_abastecimento'));
                         if (abastecimento) {
@@ -1195,7 +1198,7 @@
                         }
                         const repouso = JSON.parse(localStorage.getItem('ucaq_repouso'));
                         if (repouso) {
-                            textoWpp += `*Repouso*\nHora Início: ${repouso.inicio}\nHora Fim: ${repouso.fim}\nFrase: ${repouso.motivo}\n\n`;
+                            textoWpp += `*Repouso*\nHora Início: ${repouso.inicio}\nHora Fim: ${repouso.fim}\nAtividade: ${repouso.motivo}\n\n`;
                         }
                         // Exibir opções de compartilhamento
                         let opcoes = document.createElement('div');
