@@ -1071,16 +1071,16 @@
                     // Card Deslocamento
                     if (desloc) {
                         html += `<div style='${cardStyle}'>
-                            <strong>Deslocamento</strong><br>
-                            <strong>Poço:</strong> ${desloc.poco}<br>
-                            <strong>Origem:</strong> ${desloc.origem}<br>
-                            <strong>Destino:</strong> ${desloc.destino}<br>
-                            <strong>Hora Inicial:</strong> ${desloc.inicio}<br>
-                            <strong>Hora Final:</strong> ${desloc.fim}<br>
-                            <strong>KM Inicial:</strong> ${desloc.kmInicio}<br>
-                            <strong>KM Final:</strong> ${desloc.kmFim}<br>
-                            <strong>KM Percorrido:</strong> ${!isNaN(parseFloat(desloc.kmInicio)) && !isNaN(parseFloat(desloc.kmFim)) ? (parseFloat(desloc.kmFim) - parseFloat(desloc.kmInicio)).toFixed(2) + ' km' : ''}
-                        </div>`;
+                        <strong>Deslocamento</strong><br>
+                        <strong>Poço:</strong> ${desloc.poco}<br>
+                        <strong>Origem:</strong> ${desloc.origem}<br>
+                        <strong>Destino:</strong> ${desloc.destino}<br>
+                        <strong>Hora Inicial:</strong> ${desloc.inicio}<br>
+                        <strong>Hora Final:</strong> ${desloc.fim}<br>
+                        <strong>KM Inicial:</strong> ${desloc.kmInicio}<br>
+                        <strong>KM Final:</strong> ${desloc.kmFim}<br>
+                        <strong>KM Percorrido:</strong> ${!isNaN(parseFloat(desloc.kmInicio)) && !isNaN(parseFloat(desloc.kmFim)) ? Math.round(parseFloat(desloc.kmFim) - parseFloat(desloc.kmInicio)) + ' km' : ''}
+                    </div>`;
                     }
                     // Card Operação
                     if (operacao) {
@@ -1171,7 +1171,7 @@
                         if (desloc) {
                             let kmPercorrido = '';
                             if (!isNaN(parseFloat(desloc.kmInicio)) && !isNaN(parseFloat(desloc.kmFim))) {
-                                kmPercorrido = (parseFloat(desloc.kmFim) - parseFloat(desloc.kmInicio)).toFixed(2) + ' km';
+                                kmPercorrido = Math.round(parseFloat(desloc.kmFim) - parseFloat(desloc.kmInicio)) + ' km';
                             }
                             textoWpp += `*Deslocamento*\nPoço: ${desloc.poco}\nOrigem: ${desloc.origem}\nDestino: ${desloc.destino}\nHora Inicial: ${desloc.inicio}\nHora Final: ${desloc.fim}\nKM Inicial: ${desloc.kmInicio}\nKM Final: ${desloc.kmFim}\nKM Percorrido: ${kmPercorrido}\n\n`;
                         }
