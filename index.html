@@ -1079,7 +1079,7 @@
                         <strong>Hora Final:</strong> ${desloc.fim}<br>
                         <strong>KM Inicial:</strong> ${desloc.kmInicio}<br>
                         <strong>KM Final:</strong> ${desloc.kmFim}<br>
-                        <strong>KM Percorrido:</strong> ${!isNaN(parseFloat(desloc.kmInicio)) && !isNaN(parseFloat(desloc.kmFim)) ? Math.round(parseFloat(desloc.kmFim) - parseFloat(desloc.kmInicio)) + ' km' : ''}
+
                     </div>`;
                     }
                     // Card Operação
@@ -1103,7 +1103,7 @@
                             <strong>Poço:</strong> ${aguardo.poco}<br>
                             <strong>Hora Início:</strong> ${aguardo.inicio}<br>
                             <strong>Hora Fim:</strong> ${aguardo.fim}<br>
-                            <strong>Tempo Aguardando:</strong> ${aguardo.tempoAguardando || '-'}<br>
+
                             <strong>Motivação:</strong> ${aguardo.motivo}
                         </div>`;
                     }
@@ -1169,11 +1169,7 @@
                         }
                         const desloc = JSON.parse(localStorage.getItem('ucaq_deslocamento'));
                         if (desloc) {
-                            let kmPercorrido = '';
-                            if (!isNaN(parseFloat(desloc.kmInicio)) && !isNaN(parseFloat(desloc.kmFim))) {
-                                kmPercorrido = Math.round(parseFloat(desloc.kmFim) - parseFloat(desloc.kmInicio)) + ' km';
-                            }
-                            textoWpp += `*Deslocamento*\nPoço: ${desloc.poco}\nOrigem: ${desloc.origem}\nDestino: ${desloc.destino}\nHora Inicial: ${desloc.inicio}\nHora Final: ${desloc.fim}\nKM Inicial: ${desloc.kmInicio}\nKM Final: ${desloc.kmFim}\nKM Percorrido: ${kmPercorrido}\n\n`;
+                            textoWpp += `*Deslocamento*\nPoço: ${desloc.poco}\nOrigem: ${desloc.origem}\nDestino: ${desloc.destino}\nHora Inicial: ${desloc.inicio}\nHora Final: ${desloc.fim}\nKM Inicial: ${desloc.kmInicio}\nKM Final: ${desloc.kmFim}\n\n`;
                         }
                         const operacao = JSON.parse(localStorage.getItem('ucaq_operacao'));
                         if (operacao) {
@@ -1181,7 +1177,7 @@
                         }
                         const aguardo = JSON.parse(localStorage.getItem('ucaq_aguardo'));
                         if (aguardo) {
-                            textoWpp += `*Aguardo*\nPoço: ${aguardo.poco}\nHora Início: ${aguardo.inicio}\nHora Fim: ${aguardo.fim}\nTempo Aguardando: ${aguardo.tempoAguardando || '-'}\nMotivação: ${aguardo.motivo}\n\n`;
+                            textoWpp += `*Aguardo*\nPoço: ${aguardo.poco}\nHora Início: ${aguardo.inicio}\nHora Fim: ${aguardo.fim}\nMotivação: ${aguardo.motivo}\n\n`;
                         }
                         const mobilizacao = JSON.parse(localStorage.getItem('ucaq_mobilizacao'));
                         if (mobilizacao) {
