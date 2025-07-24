@@ -60,7 +60,7 @@
         <a href="#" onclick="showScreen('home')"><i class="fa-solid fa-house"></i> Home</a>
         <a href="#" onclick="showScreen('equipe')"><i class="fa-solid fa-users"></i> Equipe</a>
         <a href="#" onclick="showScreen('deslocamento')"><i class="fa-solid fa-route"></i> Deslocamento</a>
-        <a href="#" onclick="showScreen('operacoes')"><i class="fa-solid fa-gears"></i> Operações</a>
+        <a href="#" onclick="showScreen('operacoes')"><i class="fa-solid fa-gears"></i> Operação</a>
         <a href="#" onclick="showScreen('aguardo')"><i class="fa-solid fa-clock"></i> Aguardo</a>
         <a href="#" onclick="showScreen('mobilizacao')"><i class="fa-solid fa-truck-arrow-right"></i> Mobilização</a>
         <a href="#" onclick="showScreen('desmobilizacao')"><i class="fa-solid fa-truck-ramp-box"></i> Desmobilização</a>
@@ -73,7 +73,7 @@
         <!-- HomeScreen.js -->
         <div id="home" class="screen active">
             <div class="mobile-card">
-                <h1 class="header"><i class="fa-solid fa-house"></i> Registros de Operações</h1>
+                <h1 class="header"><i class="fa-solid fa-house"></i> Registros de Operação</h1>
                 <div id="ultimoRegistroCard"></div>
                 <div id="logList"></div>
             </div>
@@ -315,7 +315,7 @@
         <!-- OperacoesScreen.js -->
         <div id="operacoes" class="screen">
             <div class="mobile-card">
-                <h1 class="header"><i class="fa-solid fa-gears"></i> Operações</h1>
+                <h1 class="header"><i class="fa-solid fa-gears"></i> Operação</h1>
                 <div class="form-group">
                     <label>Nome do Poço</label>
                     <input id="operacaoPoco" placeholder="Ex: Pir-67">
@@ -1085,7 +1085,7 @@
                     // Card Operação
                     if (operacao) {
                         html += `<div style='${cardStyle}'>
-                            <strong>Operações</strong><br>
+                            <strong>Operação</strong><br>
                             <strong>Poço:</strong> ${operacao.poco}<br>
                             <strong>Status:</strong> ${operacao.status ? operacao.status : 'Normal'}<br>
                             <strong>Atividade:</strong> ${operacao.atividade}<br>
@@ -1177,7 +1177,7 @@
                         }
                         const operacao = JSON.parse(localStorage.getItem('ucaq_operacao'));
                         if (operacao) {
-                            textoWpp += `*Operações*\nPoço: ${operacao.poco}\nAtividade: ${operacao.atividade}\nHora Início: ${operacao.inicio}\nHora Fim: ${operacao.fim}\nVolume: ${operacao.volume ? operacao.volume + ' bbl' : '-'}\nTemperatura: ${operacao.temperatura ? operacao.temperatura + ' °C' : '-'}\nPressão: ${operacao.pressao ? operacao.pressao + ' psi' : '-'}\n\n`;
+                            textoWpp += `*Operação*\nPoço: ${operacao.poco}\nAtividade: ${operacao.atividade}\nHora Início: ${operacao.inicio}\nHora Fim: ${operacao.fim}\nVolume: ${operacao.volume ? operacao.volume + ' bbl' : '-'}\nTemperatura: ${operacao.temperatura ? operacao.temperatura + ' °C' : '-'}\nPressão: ${operacao.pressao ? operacao.pressao + ' psi' : '-'}\n\n`;
                         }
                         const aguardo = JSON.parse(localStorage.getItem('ucaq_aguardo'));
                         if (aguardo) {
