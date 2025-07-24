@@ -1182,7 +1182,11 @@
                         }
                         const operacao = JSON.parse(localStorage.getItem('ucaq_operacao'));
                         if (operacao) {
-                            textoWpp += `*Operação*\nPoço: ${operacao.poco}\nAtividade: ${operacao.atividade}\nHora Início: ${operacao.inicio}\nHora Fim: ${operacao.fim}\nVolume: ${operacao.volume ? operacao.volume + ' bbl' : '-'}\nTemperatura: ${operacao.temperatura ? operacao.temperatura + ' °C' : '-'}\nPressão: ${operacao.pressao ? operacao.pressao + ' psi' : '-'}\n\n`;
+                            textoWpp += `*Operação*\nPoço: ${operacao.poco}\nAtividade: ${operacao.atividade}\nHora Início: ${operacao.inicio}\nHora Fim: ${operacao.fim}\nVolume: ${operacao.volume ? operacao.volume + ' bbl' : '-'}\nTemperatura: ${operacao.temperatura ? operacao.temperatura + ' °C' : '-'}\nPressão: ${operacao.pressao ? operacao.pressao + ' psi' : '-'}\n`;
+                            if (operacao.observacao) {
+                                textoWpp += `Observação: ${operacao.observacao}\n`;
+                            }
+                            textoWpp += `\n`;
                         }
                         const aguardo = JSON.parse(localStorage.getItem('ucaq_aguardo'));
                         if (aguardo) {
