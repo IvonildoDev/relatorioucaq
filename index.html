@@ -1176,38 +1176,79 @@
                         if (equipe) {
                             textoWpp += `*Equipe*\nOperador: ${equipe.operador}\nAuxiliar: ${equipe.auxiliar}\nData: ${equipe.data ? equipe.data.split('-').reverse().join('/') : ''}\nPoço: ${equipe.poco}\n\n`;
                         }
+                        // Coletar todos os blocos com hora de início
+                        const blocos = [];
                         const desloc = JSON.parse(localStorage.getItem('ucaq_deslocamento'));
-                        if (desloc) {
-                            textoWpp += `*Deslocamento*\nPoço: ${desloc.poco}\nOrigem: ${desloc.origem}\nDestino: ${desloc.destino}\nHora Inicial: ${desloc.inicio}\nHora Final: ${desloc.fim}\nKM Inicial: ${desloc.kmInicio}\nKM Final: ${desloc.kmFim}\n\n`;
+                        if (desloc && desloc.inicio) {
+                            blocos.push({
+                                tipo: 'Deslocamento',
+                                hora: desloc.inicio,
+                                texto: `*Deslocamento*\nPoço: ${desloc.poco}\nOrigem: ${desloc.origem}\nDestino: ${desloc.destino}\nHora Inicial: ${desloc.inicio}\nHora Final: ${desloc.fim}\nKM Inicial: ${desloc.kmInicio}\nKM Final: ${desloc.kmFim}\n\n`
+                            });
                         }
                         const operacao = JSON.parse(localStorage.getItem('ucaq_operacao'));
-                        if (operacao) {
-                            textoWpp += `*Operação*\nPoço: ${operacao.poco}\nAtividade: ${operacao.atividade}\nHora Início: ${operacao.inicio}\nHora Fim: ${operacao.fim}\nVolume: ${operacao.volume ? operacao.volume + ' bbl' : '-'}\nTemperatura: ${operacao.temperatura ? operacao.temperatura + ' °C' : '-'}\nPressão: ${operacao.pressao ? operacao.pressao + ' psi' : '-'}\n`;
+                        if (operacao && operacao.inicio) {
+                            let textoOp = `*Operação*\nPoço: ${operacao.poco}\nAtividade: ${operacao.atividade}\nHora Início: ${operacao.inicio}\nHora Fim: ${operacao.fim}\nVolume: ${operacao.volume ? operacao.volume + ' bbl' : '-'}\nTemperatura: ${operacao.temperatura ? operacao.temperatura + ' °C' : '-'}\nPressão: ${operacao.pressao ? operacao.pressao + ' psi' : '-'}\n`;
                             if (operacao.observacao) {
-                                textoWpp += `Observação: ${operacao.observacao}\n`;
+                                textoOp += `Observação: ${operacao.observacao}\n`;
                             }
-                            textoWpp += `\n`;
+                            textoOp += `\n`;
+                            blocos.push({ tipo: 'Operação', hora: operacao.inicio, texto: textoOp });
                         }
                         const aguardo = JSON.parse(localStorage.getItem('ucaq_aguardo'));
-                        if (aguardo) {
-                            textoWpp += `*Aguardo*\nPoço: ${aguardo.poco}\nHora Início: ${aguardo.inicio}\nHora Fim: ${aguardo.fim}\nMotivação: ${aguardo.motivo}\n\n`;
+                        if (aguardo && aguardo.inicio) {
+                            blocos.push({
+                                tipo: 'Aguardo',
+                                hora: aguardo.inicio,
+                                texto: `*Aguardo*\nPoço: ${aguardo.poco}\nHora Início: ${aguardo.inicio}\nHora Fim: ${aguardo.fim}\nMotivação: ${aguardo.motivo}\n\n`
+                            });
                         }
                         const mobilizacao = JSON.parse(localStorage.getItem('ucaq_mobilizacao'));
-                        if (mobilizacao) {
-                            textoWpp += `*Mobilização*\nPoço: ${mobilizacao.poco}\nHora Início: ${mobilizacao.inicio}\nHora Fim: ${mobilizacao.fim}\nAtividade: ${mobilizacao.atividade}\n\n`;
+                        if (mobilizacao && mobilizacao.inicio) {
+                            blocos.push({
+                                tipo: 'Mobilização',
+                                hora: mobilizacao.inicio,
+                                texto: `*Mobilização*\nPoço: ${mobilizacao.poco}\nHora Início: ${mobilizacao.inicio}\nHora Fim: ${mobilizacao.fim}\nAtividade: ${mobilizacao.atividade}\n\n`
+                            });
                         }
                         const desmobilizacao = JSON.parse(localStorage.getItem('ucaq_desmobilizacao'));
-                        if (desmobilizacao) {
-                            textoWpp += `*Desmobilização*\nPoço: ${desmobilizacao.poco}\nHora Início: ${desmobilizacao.inicio}\nHora Fim: ${desmobilizacao.fim}\nAtividade: ${desmobilizacao.atividade}\n\n`;
+                        if (desmobilizacao && desmobilizacao.inicio) {
+                            blocos.push({
+                                tipo: 'Desmobilização',
+                                hora: desmobilizacao.inicio,
+                                texto: `*Desmobilização*\nPoço: ${desmobilizacao.poco}\nHora Início: ${desmobilizacao.inicio}\nHora Fim: ${desmobilizacao.fim}\nAtividade: ${desmobilizacao.atividade}\n\n`
+                            });
                         }
                         const abastecimento = JSON.parse(localStorage.getItem('ucaq_abastecimento'));
-                        if (abastecimento) {
-                            textoWpp += `*Abastecimento*\nPoço: ${abastecimento.poco}\nHora Início: ${abastecimento.inicio}\nHora Fim: ${abastecimento.fim}\nTipo: ${abastecimento.tipo}\n\n`;
+                        if (abastecimento && abastecimento.inicio) {
+                            blocos.push({
+                                tipo: 'Abastecimento',
+                                hora: abastecimento.inicio,
+                                texto: `*Abastecimento*\nPoço: ${abastecimento.poco}\nHora Início: ${abastecimento.inicio}\nHora Fim: ${abastecimento.fim}\nTipo: ${abastecimento.tipo}\n\n`
+                            });
                         }
                         const repouso = JSON.parse(localStorage.getItem('ucaq_repouso'));
-                        if (repouso) {
-                            textoWpp += `*Repouso*\nHora Início: ${repouso.inicio}\nHora Fim: ${repouso.fim}\nAtividade: ${repouso.motivo}\n\n`;
+                        if (repouso && repouso.inicio) {
+                            blocos.push({
+                                tipo: 'Repouso',
+                                hora: repouso.inicio,
+                                texto: `*Repouso*\nHora Início: ${repouso.inicio}\nHora Fim: ${repouso.fim}\nAtividade: ${repouso.motivo}\n\n`
+                            });
                         }
+                        // Ordenar blocos pela hora de início
+                        blocos.sort(function (a, b) {
+                            // Converter hora para minutos para ordenação
+                            function horaParaMin(hora) {
+                                if (!hora || !/^\d{2}:\d{2}$/.test(hora)) return 0;
+                                var p = hora.split(':');
+                                return parseInt(p[0], 10) * 60 + parseInt(p[1], 10);
+                            }
+                            return horaParaMin(a.hora) - horaParaMin(b.hora);
+                        });
+                        // Montar texto final
+                        blocos.forEach(function (bloco) {
+                            textoWpp += bloco.texto;
+                        });
                         // Exibir opções de compartilhamento
                         let opcoes = document.createElement('div');
                         opcoes.style.position = 'fixed';
