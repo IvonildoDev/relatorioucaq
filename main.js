@@ -305,7 +305,7 @@ function renderUltimoRegistro() {
         </div>
         `;
     } else {
-        div.innerHTML = `<div style='color:#888;font-size:1em;margin:14px 0 0 0;'>Nenhuma operação salva ainda.</div>`;
+    div.innerHTML = "";
     }
 }
 document.addEventListener('DOMContentLoaded', renderUltimoRegistro);
@@ -671,7 +671,11 @@ function renderLogs() {
     function renderLogList() {
         const logList = document.getElementById('logList');
         if (!window.logs || window.logs.length === 0) {
-            logList.innerHTML = '<div style="text-align:center;color:#888;">Nenhum registro cadastrado ainda.</div>';
+            logList.innerHTML = `
+            <div style="text-align:center; margin: 48px 0 32px 0;">
+                <div style="font-size:2.5rem;color:#1976D2;font-weight:800;letter-spacing:0.01em;">Ucaq</div>
+                <div style="font-size:1.15rem;color:#1976D2;font-weight:600;letter-spacing:0.01em;">Unidade de Circulação de Água Quente</div>
+            </div>`;
             return;
         }
         // Mostra só o último registro
