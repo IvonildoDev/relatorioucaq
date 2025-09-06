@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCAQ - Detalhes</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="js/details.js" defer></script>
+</head>
+
+<body>
+    <div class="sidebar" id="drawer">
+        <div style="text-align:center;margin-bottom:10px;">
+            <svg width="120" height="60" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <text x="5" y="40" font-size="32" font-family="Arial, Helvetica, sans-serif" font-weight="bold"
+                    fill="#FFD700">U</text>
+                <text x="35" y="40" font-size="32" font-family="Arial, Helvetica, sans-serif" font-weight="bold"
+                    fill="#333">CAQ</text>
+                <ellipse cx="18" cy="20" rx="7" ry="7" fill="#25D3EF" opacity="0.7" />
+                <ellipse cx="18" cy="20" rx="3" ry="3" fill="#FFD700" />
+            </svg>
+        </div>
+        <h2 class="header">Ucaq</h2>
+        <p>Unidade de Circulação de Água Quente</p>
+        <a href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="equipe.html"><i class="fa-solid fa-users"></i>Equipe</a>
+        <a href="deslocamento.html"><i class="fa-solid fa-truck"></i>Deslocamento</a>
+        <a href="operacao.html"><i class="fa-solid fa-gears"></i>Operação</a>
+        <a href="aguardo.html"><i class="fa-regular fa-hourglass-half"></i>Aguardo</a>
+        <a href="mobilizacao.html"><i class="fa-solid fa-screwdriver-wrench"></i>Mobilização</a>
+        <a href="desmobilizacao.html"><i class="fa-solid fa-hammer"></i>Desmobilização</a>
+        <a href="abastecimento.html"><i class="fa-solid fa-gas-pump"></i>Abastecimento</a>
+        <a href="alimentacao.html"><i class="fa-solid fa-utensils"></i>Alimentação</a>
+        <a href="relatorio.html"><i class="fa-solid fa-chart-bar"></i>Relatório</a>
+        <a href="sobre.html"><i class="fa-solid fa-circle-info"></i>Sobre</a>
+    </div>
+
+    <button class="menu-btn" onclick="toggleDrawer()">☰</button>
+
+    <div class="container">
+        <div class="screen active" id="details">
+            <h2 class="header"><i class="fa-solid fa-magnifying-glass"></i> Detalhes do Registro</h2>
+            <div id="detailsContent" class="card"></div>
+            <div class="back-button">
+                <a href="index.html" class="btn">
+                    <i class="fa-solid fa-arrow-left"></i> Voltar para Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer style="text-align: center;">Relatório de Operações UCAQ © 2025</footer>
+</body>
+
+</html>

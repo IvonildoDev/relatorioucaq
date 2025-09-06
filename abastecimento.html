@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCAQ - Abastecimento</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/abastecimento.js"></script>
+</head>
+
+<body>
+    <div class="sidebar" id="drawer">
+        <div style="text-align:center;margin-bottom:10px;">
+            <svg width="120" height="60" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <text x="5" y="40" font-size="32" font-family="Arial, Helvetica, sans-serif" font-weight="bold"
+                    fill="#FFD700">U</text>
+                <text x="35" y="40" font-size="32" font-family="Arial, Helvetica, sans-serif" font-weight="bold"
+                    fill="#333">CAQ</text>
+                <ellipse cx="18" cy="20" rx="7" ry="7" fill="#25D3EF" opacity="0.7" />
+                <ellipse cx="18" cy="20" rx="3" ry="3" fill="#FFD700" />
+            </svg>
+        </div>
+        <h2 class="header">Ucaq</h2>
+        <p>Unidade de Circulação de Água Quente</p>
+        <a href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="equipe.html"><i class="fa-solid fa-users"></i>Equipe</a>
+        <a href="deslocamento.html"><i class="fa-solid fa-truck"></i>Deslocamento</a>
+        <a href="operacao.html"><i class="fa-solid fa-gears"></i>Operação</a>
+        <a href="aguardo.html"><i class="fa-regular fa-hourglass-half"></i>Aguardo</a>
+        <a href="mobilizacao.html"><i class="fa-solid fa-screwdriver-wrench"></i>Mobilização</a>
+        <a href="desmobilizacao.html"><i class="fa-solid fa-hammer"></i>Desmobilização</a>
+        <a href="abastecimento.html" class="active"><i class="fa-solid fa-gas-pump"></i>Abastecimento</a>
+        <a href="alimentacao.html"><i class="fa-solid fa-utensils"></i>Alimentação</a>
+        <a href="relatorio.html"><i class="fa-solid fa-chart-bar"></i>Relatório</a>
+        <a href="sobre.html"><i class="fa-solid fa-circle-info"></i>Sobre</a>
+    </div>
+
+    <button class="menu-btn" onclick="toggleDrawer()">☰</button>
+
+    <div class="container">
+        <div class="screen active" id="abastecimento">
+            <h2 class="header">Abastecimento</h2>
+            <div class="card">
+                <div class="form-group">
+                    <label for="well">Nome do Poço</label>
+                    <input type="text" id="well" placeholder="Digite o nome do poço">
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Abastecimento</label>
+                    <div id="typeIconGroup" class="type-icon-group">
+                        <button type="button" id="aguaBtn" class="type-btn type-agua" onclick="selectType('Água')">
+                            <i class="fa-solid fa-droplet"></i>
+                            <span>Água</span>
+                        </button>
+                        <button type="button" id="combustivelBtn" class="type-btn type-combustivel"
+                            onclick="selectType('Combustível')">
+                            <i class="fa-solid fa-gas-pump"></i>
+                            <span>Combustível</span>
+                        </button>
+                        <input type="hidden" id="supplyType" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="date">Data</label>
+                    <input type="date" id="date" name="date">
+                </div>
+                <div class="form-group">
+                    <label for="startTime">Hora Início</label>
+                    <input type="time" id="startTime">
+                </div>
+                <div class="form-group">
+                    <label for="endTime">Hora Fim</label>
+                    <input type="time" id="endTime">
+                </div>
+                <!-- <div class="form-group">
+                    <label for="quantity">Quantidade (litros)</label>
+                    <input type="number" id="quantity" placeholder="Digite a quantidade em litros">
+                </div> -->
+                <div class="form-actions">
+                    <button type="button" class="btn-registrar" onclick="saveSupply()">
+                        <i class="fas fa-check"></i> Registrar Abastecimento
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer style="text-align: center;">Relatório de Operações UCAQ © 2025</footer>
+
+    <button id="btnDownloadDb"
+        style="position:fixed;bottom:24px;right:24px;z-index:200;background:#1976D2;color:#fff;padding:12px 20px;border:none;border-radius:8px;box-shadow:0 2px 8px rgba(25,118,210,0.13);cursor:pointer;">
+        <i class="fa-solid fa-download"></i> Baixar Banco de Dados
+    </button>
+    <script>
+        document.getElementById('btnDownloadDb').onclick = function () {
+            if (window.db && window.db.download) {
+                window.db.download();
+            } else {
+                alert('Banco de dados não está disponível!');
+            }
+        };
+    </script>
+</body>
+
+</html>

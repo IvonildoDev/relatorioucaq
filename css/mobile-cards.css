@@ -1,0 +1,280 @@
+/* Estilos para aprimorar a experiência mobile e cards do relatório */
+
+/* Cards do relatório */
+.report-section {
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.report-section h3 {
+    color: #1976D2;
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 8px;
+}
+
+.report-section h3 i {
+    color: #1976D2;
+}
+
+.report-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.report-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid #1976D2;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+}
+
+.report-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.report-card-title {
+    font-weight: bold;
+    color: #1976D2;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.report-card-title span {
+    font-size: 0.85rem;
+    color: #777;
+    font-weight: normal;
+}
+
+.report-card-body {
+    font-size: 0.95rem;
+}
+
+.report-card-body p {
+    margin: 6px 0;
+}
+
+.report-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 12px;
+    border-top: 1px solid #eee;
+    padding-top: 12px;
+}
+
+.report-card-actions button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    min-height: unset;
+    width: auto;
+}
+
+/* Cores diferentes para cada tipo de card */
+.card-equipe {
+    border-left-color: #2196F3;
+}
+
+.card-deslocamento {
+    border-left-color: #FF9800;
+}
+
+.card-operacao {
+    border-left-color: #4CAF50;
+}
+
+.card-aguardo {
+    border-left-color: #9C27B0;
+}
+
+.card-mobilizacao {
+    border-left-color: #E91E63;
+}
+
+.card-desmobilizacao {
+    border-left-color: #F44336;
+}
+
+.card-abastecimento {
+    border-left-color: #009688;
+}
+
+.card-alimentacao {
+    border-left-color: #FF5722;
+}
+
+/* Melhorias para mobile */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px 12px;
+    }
+    
+    .report-cards-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .header {
+        font-size: 1.6rem;
+        margin-top: 50px;
+    }
+    
+    .form-group input, 
+    .form-group select, 
+    .form-group textarea {
+        font-size: 16px; /* Evita zoom em iPhones */
+        padding: 12px;
+    }
+    
+    button {
+        padding: 14px 20px;
+        width: 100%;
+        margin: 8px 0;
+    }
+    
+    .menu-btn {
+        top: 10px;
+        left: 10px;
+    }
+    
+    .card, .mobile-card {
+        padding: 16px 14px;
+        border-radius: 10px;
+    }
+
+    /* Barra fixa no topo em mobile */
+    .mobile-header-fixed {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+        padding: 10px 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        z-index: 99;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .mobile-header-fixed h2 {
+        margin: 0;
+        font-size: 1.3rem;
+        padding-left: 40px; /* Espaço para o botão de menu */
+    }
+    
+    /* Ajusta o espaço para o header fixo */
+    .mobile-header-space {
+        height: 60px;
+    }
+}
+
+/* Formulário de filtro responsivo */
+.filter-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.filter-form label {
+    font-weight: 600;
+    color: #1976D2;
+    margin-right: 5px;
+}
+
+.filter-form input {
+    flex: 1;
+    min-width: 180px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.filter-form button {
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .filter-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-form input,
+    .filter-form button {
+        width: 100%;
+    }
+}
+
+/* Melhorias gerais de UI */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 18px;
+    background: #1976D2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background: #1565C0;
+    box-shadow: 0 4px 12px rgba(21, 101, 192, 0.2);
+}
+
+.alert {
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    font-weight: 500;
+}
+
+.alert-info {
+    background-color: #e3f2fd;
+    color: #0d47a1;
+    border-left: 4px solid #2196F3;
+}
+
+.alert-warning {
+    background-color: #fff8e1;
+    color: #ff8f00;
+    border-left: 4px solid #ffc107;
+}
+
+/* Animação de carregamento para ações assíncronas */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCAQ - Operação</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/mobile-enhancements.css">
+    <link rel="stylesheet" href="css/mobile-cards.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="js/operacao.js" defer></script>
+    <script src="js/integracao.js" defer></script>
+</head>
+
+<body>
+    <div class="sidebar" id="drawer">
+        <div style="text-align:center;margin-bottom:10px;">
+            <svg width="120" height="60" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <text x="5" y="40" font-size="32" font-family="Arial, Helvetica, sans-serif" font-weight="bold"
+                    fill="#FFD700">U</text>
+                <text x="35" y="40" font-size="32" font-family="Arial, Helvetica, sans-serif" font-weight="bold"
+                    fill="#333">CAQ</text>
+                <ellipse cx="18" cy="20" rx="7" ry="7" fill="#25D3EF" opacity="0.7" />
+                <ellipse cx="18" cy="20" rx="3" ry="3" fill="#FFD700" />
+            </svg>
+        </div>
+        <h2 class="header">Ucaq</h2>
+        <p>Unidade de Circulação de Água Quente</p>
+        <a href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="equipe.html"><i class="fa-solid fa-users"></i>Equipe</a>
+        <a href="deslocamento.html"><i class="fa-solid fa-truck"></i>Deslocamento</a>
+        <a href="operacao.html" class="active"><i class="fa-solid fa-gears"></i>Operação</a>
+        <a href="aguardo.html"><i class="fa-regular fa-hourglass-half"></i>Aguardo</a>
+        <a href="mobilizacao.html"><i class="fa-solid fa-screwdriver-wrench"></i>Mobilização</a>
+        <a href="desmobilizacao.html"><i class="fa-solid fa-hammer"></i>Desmobilização</a>
+        <a href="abastecimento.html"><i class="fa-solid fa-gas-pump"></i>Abastecimento</a>
+        <a href="alimentacao.html"><i class="fa-solid fa-utensils"></i>Alimentação</a>
+        <a href="relatorio.html"><i class="fa-solid fa-chart-bar"></i>Relatório</a>
+        <a href="sobre.html"><i class="fa-solid fa-circle-info"></i>Sobre</a>
+    </div>
+
+    <!-- Fundo escuro para quando o menu estiver aberto em mobile -->
+    <div class="sidebar-backdrop" onclick="toggleDrawer()"></div>
+
+    <!-- Botão de menu para mobile -->
+    <button class="menu-btn" onclick="toggleDrawer()">☰</button>
+
+    <!-- Header fixo para mobile -->
+    <div class="mobile-header-fixed" id="mobileHeader">
+        <h2><i class="fa-solid fa-gears"></i> Operação</h2>
+    </div>
+    <div class="mobile-header-space"></div>
+
+    <div class="container">
+        <div class="screen active" id="operacao">
+            <h2 class="header">Operação</h2>
+
+            <!-- Lista de operações salvas -->
+            <div id="operacoesSalvas" class="report-cards-container"></div>
+
+            <div class="card">
+                <div class="form-group">
+                    <label for="pocoId">ID do Poço (opcional)</label>
+                    <input type="text" id="pocoId" placeholder="Ex: 12345">
+                </div>
+                <div class="form-group">
+                    <label for="poco">Nome do Poço</label>
+                    <input type="text" id="poco" placeholder="Ex: Pir-67">
+                </div>
+                <div class="form-group">
+                    <label for="servico">Serviço</label>
+                    <select id="servico">
+                        <option value="">Selecione um serviço</option>
+                        <option value="Producao">Produção</option>
+                        <option value="Deslocamento de Pig">Deslocamento de Pig</option>
+                        <option value="Desparafinação térmica na coluna">Desparafinação térmica na coluna</option>
+                        <option value="Desparafinação térmica na linha de produção">Desparafinação térmica na linha de
+                            produção</option>
+                        <option value="Preenchimento de linha">Preenchimento de linha</option>
+                        <option value="Deslocamento de Pig e térmica na linha">Deslocamento de Pig e térmica na linha
+                        </option>
+                        <option value="Limpeza">Limpeza</option>
+                        <option value="Limpeza">Limpeza de tanque </option>
+                        <option value="Teste de estanquidade">Teste de estanquidade</option>
+                        <option value="Teste hidrostático">Teste hidrostático</option>
+                        <option value="Preenchimento de coluna">Preenchimento de coluna</option>
+                        <option value="Injeção na coluna">Injeção na coluna</option>
+                        <option value="Injeção na coluna">Injeção de quimico no anular </option>
+                        <option value="Injeção na coluna">Injeção no anular</option>
+                        <option value="Apoio a slickline">Apoio a slickline</option>
+                        <option value="Servico cancelado">Serviço cancelado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="startTime">Hora Início</label>
+                    <input type="time" id="startTime">
+                </div>
+                <div class="form-group">
+                    <label for="endTime">Hora Fim</label>
+                    <input type="time" id="endTime">
+                </div>
+                <div class="form-group">
+                    <label for="volume">Volume (bbl, opcional)</label>
+                    <input type="text" id="volume" placeholder="Ex: 5">
+                </div>
+                <div class="form-group">
+                    <label for="temperature">Temperatura (°C, opcional)</label>
+                    <input type="text" id="temperature" placeholder="Ex: 60">
+                </div>
+                <div class="form-group">
+                    <label for="pressure">Pressão (psi, opcional)</label>
+                    <input type="text" id="pressure" placeholder="Ex: 650">
+                </div>
+                <div class="form-group">
+                    <label for="observation">Observação</label>
+                    <textarea id="observation" maxlength="150" rows="2"
+                        placeholder="Digite uma observação (máx. 150 caracteres)"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-registrar" onclick="saveOperation()">
+                        <i class="fas fa-check"></i> Registrar Operação
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navegação mobile fixa na parte inferior -->
+            <!-- <div class="mobile-nav-btns">
+                <a href="deslocamento.html" class="btn">
+                    <i class="fa-solid fa-arrow-left"></i> Deslocamento
+                </a>
+                <a href="aguardo.html" class="btn">
+                    Aguardo <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div> -->
+        </div>
+    </div>
+
+    <footer style="text-align: center;">Relatório de Operações UCAQ © 2025</footer>
+</body>
+
+</html>

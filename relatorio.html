@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCAQ - Relatório</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/mobile-cards.css">
+    <link rel="stylesheet" href="css/delete-buttons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/relatorio.js" defer></script>
+    <script src="js/integracao.js" defer></script>
+</head>
+
+<body>
+    <div class="sidebar" id="drawer">
+        <div style="text-align:center;margin-bottom:10px;">
+            <svg width="120" height="60" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <text x="5" y="40" font-size="32" font-family="Arial, Helvetica, sans-serif" font-weight="bold"
+                    fill="#FFD700">U</text>
+                <text x="35" y="40" font-size="32" font-family="Arial, Helvetica, sans-serif" font-weight="bold"
+                    fill="#333">CAQ</text>
+                <ellipse cx="18" cy="20" rx="7" ry="7" fill="#25D3EF" opacity="0.7" />
+                <ellipse cx="18" cy="20" rx="3" ry="3" fill="#FFD700" />
+            </svg>
+        </div>
+        <h2 class="header">Ucaq</h2>
+        <p>Unidade de Circulação de Água Quente</p>
+        <a href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="equipe.html"><i class="fa-solid fa-users"></i>Equipe</a>
+        <a href="deslocamento.html"><i class="fa-solid fa-truck"></i>Deslocamento</a>
+        <a href="operacao.html"><i class="fa-solid fa-gears"></i>Operação</a>
+        <a href="aguardo.html"><i class="fa-regular fa-hourglass-half"></i>Aguardo</a>
+        <a href="mobilizacao.html"><i class="fa-solid fa-screwdriver-wrench"></i>Mobilização</a>
+        <a href="desmobilizacao.html"><i class="fa-solid fa-hammer"></i>Desmobilização</a>
+        <a href="abastecimento.html"><i class="fa-solid fa-gas-pump"></i>Abastecimento</a>
+        <a href="alimentacao.html"><i class="fa-solid fa-utensils"></i>Alimentação</a>
+        <a href="relatorio.html" class="active"><i class="fa-solid fa-chart-bar"></i>Relatório</a>
+        <a href="sobre.html"><i class="fa-solid fa-circle-info"></i>Sobre</a>
+    </div>
+
+    <!-- Botão de menu para mobile -->
+    <button class="menu-btn" onclick="toggleDrawer()">☰</button>
+
+    <!-- Header fixo para mobile -->
+    <div class="mobile-header-fixed" id="mobileHeader">
+        <h2><i class="fa-solid fa-chart-bar"></i> Relatório</h2>
+    </div>
+    <div class="mobile-header-space"></div>
+
+    <div class="container">
+        <div class="screen active" id="relatorio">
+            <h2 class="header">Relatório</h2>
+
+            <!-- Formulário de filtro responsivo -->
+            <div class="filter-form">
+                <label for="dataFiltro">Filtrar por data:</label>
+                <input type="date" id="dataFiltro" class="form-control">
+                <button id="btnPesquisar" class="btn">
+                    <i class="fa-solid fa-search"></i> Pesquisar
+                </button>
+            </div>
+
+            <!-- Conteúdo do relatório com cards -->
+            <div id="reportList"></div>
+
+            <!-- Botões de ação -->
+            <div class="report-actions">
+                <button onclick="clearReport()" id="clearReportBtn" class="btn-danger">
+                    <i class="fa-solid fa-trash-alt"></i> Limpar Relatório
+                </button>
+                <button id="shareWhatsapp" class="btn-whatsapp">
+                    <i class="fa-brands fa-whatsapp"></i> Compartilhar no WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer style="text-align: center;">Relatório de Operações UCAQ © 2025</footer>
+</body>
+
+</html>

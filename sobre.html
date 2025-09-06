@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCAQ - Sobre</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="js/sobre.js" defer></script>
+</head>
+
+<body>
+    <div class="sidebar" id="drawer">
+        <div style="text-align:center;margin-bottom:10px;">
+            <svg width="120" height="60" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <text x="5" y="40" font-size="32" font-family="Arial, Helvetica, sans-serif" font-weight="bold"
+                    fill="#FFD700">U</text>
+                <text x="35" y="40" font-size="32" font-family="Arial, Helvetica, sans-serif" font-weight="bold"
+                    fill="#333">CAQ</text>
+                <ellipse cx="18" cy="20" rx="7" ry="7" fill="#25D3EF" opacity="0.7" />
+                <ellipse cx="18" cy="20" rx="3" ry="3" fill="#FFD700" />
+            </svg>
+        </div>
+        <h2 class="header">Ucaq</h2>
+        <p>Unidade de Circulação de Água Quente</p>
+        <a href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="equipe.html"><i class="fa-solid fa-users"></i>Equipe</a>
+        <a href="deslocamento.html"><i class="fa-solid fa-truck"></i>Deslocamento</a>
+        <a href="operacao.html"><i class="fa-solid fa-gears"></i>Operação</a>
+        <a href="aguardo.html"><i class="fa-regular fa-hourglass-half"></i>Aguardo</a>
+        <a href="mobilizacao.html"><i class="fa-solid fa-screwdriver-wrench"></i>Mobilização</a>
+        <a href="desmobilizacao.html"><i class="fa-solid fa-hammer"></i>Desmobilização</a>
+        <a href="abastecimento.html"><i class="fa-solid fa-gas-pump"></i>Abastecimento</a>
+        <a href="alimentacao.html"><i class="fa-solid fa-utensils"></i>Alimentação</a>
+        <a href="relatorio.html"><i class="fa-solid fa-chart-bar"></i>Relatório</a>
+        <a href="sobre.html" class="active"><i class="fa-solid fa-circle-info"></i>Sobre</a>
+    </div>
+
+    <button class="menu-btn" onclick="toggleDrawer()">☰</button>
+
+    <div class="container">
+        <div class="screen active" id="sobre">
+            <h2 class="header">Sobre o Sistema</h2>
+            <div class="card info-card">
+                <p><strong>Relatório de Operações UCAQ</strong> é um sistema web desenvolvido para facilitar o registro,
+                    acompanhamento e compartilhamento das operações diárias de campo da unidade UCAQ.</p>
+
+                <h3>Como usar:</h3>
+                <ul>
+                    <li>Preencha cada etapa do processo (Equipe, Deslocamento, Operações, Aguardo, Mobilização,
+                        Desmobilização, Abastecimento, Alimentação) conforme for realizando as atividades.</li>
+                    <li>Os dados ficam salvos no seu navegador e podem ser revisados a qualquer momento.</li>
+                    <li>Ao final, acesse a tela <b>Relatório</b> para visualizar todos os dados organizados em cards.
+                    </li>
+                    <li>Use o botão <b>Compartilhar Relatório</b> para enviar o resumo das operações por WhatsApp,
+                        no formato pronto para envio.</li>
+                </ul>
+
+                <h3>Principais recursos:</h3>
+                <ul>
+                    <li>Interface simples e adaptada para dispositivos móveis.</li>
+                    <li>Preenchimento rápido e navegação entre etapas.</li>
+                    <li>Compartilhamento fácil do relatório final.</li>
+                </ul>
+
+                <div class="developer-info">
+                    <p><strong>Desenvolvido por Ivonildo Lima</strong></p>
+                </div>
+
+                <div class="back-button">
+                    <a href="index.html" class="btn">
+                        <i class="fa-solid fa-arrow-left"></i> Voltar para Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer style="text-align: center;">Relatório de Operações UCAQ © 2025</footer>
+</body>
+
+</html>
+</div>

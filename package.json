@@ -1,0 +1,23 @@
+{
+  "name": "relatorioucaq",
+  "version": "1.0.0",
+  "description": "O aplicativo \"Relatório UCAQ\" é uma ferramenta web progressiva (PWA) para registro de operações realizadas pela Unidade de Circulação de Água Quente (UCAQ). Ele permite que operadores e auxiliares registrem diversas atividades, como deslocamentos, operações, aguardos, mobilizações e desmobilizações durante suas operações de campo.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IvonildoDev/relatorioucaq.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IvonildoDev/relatorioucaq/issues"
+  },
+  "homepage": "https://github.com/IvonildoDev/relatorioucaq#readme",
+  "dependencies": {
+    "sql.js": "^1.13.0"
+  }
+}

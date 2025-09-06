@@ -1,4 +1,12 @@
+/* Formulários com largura de 40% e centralizados */
+.form-40 {
+    width: 40%;
+    min-width: 280px;
+    max-width: 480px;
+    margin: 0 auto;
+}
 /* Removido bloco duplicado de @media (max-width: 900px) para evitar conflito de regras */
+@import url('css/footer-fixed.css');
 /* Sidebar padrão */
 
 .sidebar {
