@@ -82,6 +82,16 @@ body {
     }
     
     /* Botão do menu mais visível */
+    .hamburger {
+        padding: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .hamburger svg {
+        height: 2.2em;
+    }
+    
+    /* Manter para compatibilidade com páginas que ainda usam o botão antigo */
     .menu-btn {
         width: 48px;
         height: 48px;
@@ -101,9 +111,10 @@ body {
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.3s ease;
+        display: block;
     }
     
-    .sidebar.open + .sidebar-backdrop {
+    .sidebar.open ~ .sidebar-backdrop {
         opacity: 1;
         pointer-events: auto;
     }

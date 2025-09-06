@@ -6,13 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UCAQ - Operação</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/mobile-enhancements.css">
-    <link rel="stylesheet" href="css/mobile-cards.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="js/operacao.js" defer></script>
     <script src="js/integracao.js" defer></script>
+    <script src="js/hamburger.js" defer></script>
 </head>
 
 <body>
@@ -43,14 +41,25 @@
     </div>
 
     <!-- Fundo escuro para quando o menu estiver aberto em mobile -->
-    <div class="sidebar-backdrop" onclick="toggleDrawer()"></div>
+    <div class="sidebar-backdrop" onclick="closeMenu()"></div>
 
-    <!-- Botão de menu para mobile -->
+    <!-- Menu hambúrguer animado -->
+    <label class="hamburger">
+        <input type="checkbox">
+        <svg viewBox="0 0 32 32">
+            <path class="line line-top-bottom"
+                d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22">
+            </path>
+            <path class="line" d="M7 16 27 16"></path>
+        </svg>
+    </label>
+
+    <!-- Botão de menu para mobile (compatibilidade) -->
     <button class="menu-btn" onclick="toggleDrawer()">☰</button>
 
     <!-- Header fixo para mobile -->
     <div class="mobile-header-fixed" id="mobileHeader">
-        <h2><i class="fa-solid fa-gears"></i> Operação</h2>
+        <!-- <h2><i class="fa-solid fa-gears"></i> Operação</h2> -->
     </div>
     <div class="mobile-header-space"></div>
 
@@ -89,6 +98,7 @@
                         <option value="Preenchimento de coluna">Preenchimento de coluna</option>
                         <option value="Injeção na coluna">Injeção na coluna</option>
                         <option value="Injeção de quimico no anular">Injeção de quimico no anular</option>
+                        <option value="Injeção de quimico na coluna">Injeção de quimico na coluna</option>
                         <option value="Injeção no anular">Injeção no anular</option>
                         <option value="Apoio a slickline">Apoio a slickline</option>
                         <option value="Servico cancelado">Serviço cancelado</option>

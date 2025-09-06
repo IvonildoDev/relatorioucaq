@@ -6,15 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UCAQ - Relatório</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/mobile-cards.css">
-    <link rel="stylesheet" href="css/delete-buttons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
     <script src="js/database.js"></script>
     <script src="js/relatorio.js" defer></script>
     <script src="js/integracao.js" defer></script>
+    <script src="js/hamburger.js" defer></script>
 </head>
 
 <body>
@@ -44,37 +42,60 @@
         <a href="sobre.html"><i class="fa-solid fa-circle-info"></i>Sobre</a>
     </div>
 
+    <!-- Fundo escuro para quando o menu estiver aberto em mobile -->
+    <div class="sidebar-backdrop" onclick="closeMenu()"></div>
+
+    <!-- Menu hambúrguer animado -->
+    <label class="hamburger">
+        <input type="checkbox">
+        <svg viewBox="0 0 32 32">
+            <path class="line line-top-bottom"
+                d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22">
+            </path>
+            <path class="line" d="M7 16 27 16"></path>
+        </svg>
+    </label>
+
     <!-- Botão de menu para mobile -->
-    <button class="menu-btn" onclick="toggleDrawer()">☰</button>
+    <!-- <button class="menu-btn" onclick="toggleDrawer()">☰</button> -->
 
     <!-- Header fixo para mobile -->
     <div class="mobile-header-fixed" id="mobileHeader">
-        <h2><i class="fa-solid fa-chart-bar"></i> Relatório</h2>
+        <!-- <h2><i class="fa-solid fa-chart-bar"></i> Relatório</h2> -->
     </div>
     <div class="mobile-header-space"></div>
 
     <div class="container">
         <div class="screen active" id="relatorio">
-            <h2 class="header">Relatório</h2>
+            <h2 class="header"><i class="fa-solid fa-chart-bar"></i> Relatório de Operações</h2>
 
             <!-- Formulário de filtro responsivo -->
-            <div class="filter-form">
-                <label for="dataFiltro">Filtrar por data:</label>
-                <input type="date" id="dataFiltro" class="form-control">
-                <button id="btnPesquisar" class="btn">
-                    <i class="fa-solid fa-search"></i> Pesquisar
-                </button>
+            <div class="card relatorio-card" style="margin-bottom: 24px;">
+                <form id="filtroRelatorio"
+                    style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
+                    <div style="flex: 1 1 180px; min-width: 180px;">
+                        <label for="dataFiltro" style="font-weight: 600; color: #1976D2;">Filtrar por data:</label>
+                        <input type="date" id="dataFiltro" class="form-control" style="width: 100%;">
+                    </div>
+                    <button id="btnPesquisar" class="btn" type="button" style="min-width: 140px;">
+                        <i class="fa-solid fa-search"></i> Pesquisar
+                    </button>
+                </form>
             </div>
 
             <!-- Conteúdo do relatório com cards -->
-            <div id="reportList"></div>
+            <div id="reportList" class="report-cards-container"
+                style="display: flex; flex-direction: column; gap: 18px;"></div>
 
             <!-- Botões de ação -->
-            <div class="report-actions">
-                <button onclick="clearReport()" id="clearReportBtn" class="btn-danger">
+            <div class="card relatorio-card"
+                style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-top: 24px;">
+                <button onclick="clearReport()" id="clearReportBtn" class="btn btn-danger"
+                    style="flex: 1 1 180px; min-width: 180px;">
                     <i class="fa-solid fa-trash-alt"></i> Limpar Relatório
                 </button>
-                <button id="shareWhatsapp" class="btn-whatsapp">
+                <button id="shareWhatsapp" class="btn btn-whatsapp"
+                    style="flex: 1 1 180px; min-width: 180px; background: #25D366; color: #fff;">
                     <i class="fa-brands fa-whatsapp"></i> Compartilhar no WhatsApp
                 </button>
             </div>

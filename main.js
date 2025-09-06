@@ -631,6 +631,12 @@ function loadData() {
 function toggleDrawer() {
     const drawer = document.getElementById('drawer');
     drawer.classList.toggle('open');
+
+    // Sincronizar com o checkbox do menu hambúrguer se existir
+    const hamburgerCheckbox = document.querySelector('.hamburger input');
+    if (hamburgerCheckbox) {
+        hamburgerCheckbox.checked = drawer.classList.contains('open');
+    }
 }
 
 // Screen navigation
@@ -642,7 +648,17 @@ window.showScreen = function (screenId) {
     });
     document.getElementById(screenId).classList.add('active');
     // Só fecha o drawer se for mobile
-    if (window.innerWidth < 900) toggleDrawer();
+    if (window.innerWidth < 900) {
+        // Fecha o menu
+        const drawer = document.getElementById('drawer');
+        drawer.classList.remove('open');
+
+        // Desmarca o checkbox do menu hambúrguer se existir
+        const hamburgerCheckbox = document.querySelector('.hamburger input');
+        if (hamburgerCheckbox) {
+            hamburgerCheckbox.checked = false;
+        }
+    }
     if (screenId === 'home') renderLogs();
 };
 
