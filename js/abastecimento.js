@@ -66,12 +66,6 @@ function saveSupply() {
     const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
     const duration = `${diffHrs}h ${diffMins}m`;
 
-    // Obter a data escolhida pelo usuário
-    let date = '';
-    const dateInput = document.getElementById('date');
-    if (dateInput) {
-        date = dateInput.value;
-    }
     // Verificar se o banco de dados está disponível
     if (!checkDatabaseStatus()) {
         alert('Banco de dados não está disponível. Verifique se o sistema foi inicializado corretamente.');
@@ -81,10 +75,13 @@ function saveSupply() {
     // Preparar dados para inserção
     const supplyData = {
         local: well,
-        data: date || new Date().toISOString().slice(0, 10),
+        data: new Date().toISOString().slice(0, 10), // Data atual
         litros: '', // Campo removido do formulário
         valor: '',
         kilometragem: '',
+        inicio: startTime,
+        fim: endTime,
+        tipo: supplyType,
         timestamp: new Date().toISOString()
     };
 
@@ -96,7 +93,7 @@ function saveSupply() {
 
         if (success) {
             console.log('Abastecimento salvo com sucesso no banco SQLite');
-            alert('Abastecimento registrado no banco de dados SQLite!');
+            alert('Abastecimento salvo com sucesso!');
             clearForm();
         } else {
             console.error('Falha ao salvar no banco de dados');

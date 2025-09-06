@@ -58,6 +58,9 @@ async function initDatabase() {
                 // Carrega o banco de dados existente
                 db = new SQL.Database(bytes);
                 console.log('Banco de dados SQLite carregado do localStorage');
+
+                // Verifica e atualiza a estrutura das tabelas se necessário
+                updateTables();
             } catch (e) {
                 console.error('Erro ao carregar banco de dados existente:', e);
                 // Cria um novo banco se não conseguir carregar o existente
@@ -197,6 +200,9 @@ function createTables() {
             litros TEXT,
             valor TEXT,
             kilometragem TEXT,
+            inicio TEXT,
+            fim TEXT,
+            tipo TEXT,
             timestamp TEXT NOT NULL
         )
     `);
@@ -217,6 +223,50 @@ function createTables() {
 
     // Salva o banco de dados após criar as tabelas
     saveDatabase();
+}
+
+// Verifica e atualiza a estrutura das tabelas
+function updateTables() {
+    if (!db) return;
+
+    try {
+        // Verificar e atualizar a tabela de abastecimento
+        const resultAbastecimento = db.exec("PRAGMA table_info(abastecimento)");
+
+        // Verifique se os campos inicio, fim e tipo existem
+        const columnsAbastecimento = resultAbastecimento[0]?.values || [];
+        const columnNamesAbastecimento = columnsAbastecimento.map(col => col[1]);
+
+        let needsUpdate = false;
+
+        if (!columnNamesAbastecimento.includes('inicio')) {
+            db.run("ALTER TABLE abastecimento ADD COLUMN inicio TEXT");
+            needsUpdate = true;
+            console.log("Coluna 'inicio' adicionada à tabela abastecimento");
+        }
+
+        if (!columnNamesAbastecimento.includes('fim')) {
+            db.run("ALTER TABLE abastecimento ADD COLUMN fim TEXT");
+            needsUpdate = true;
+            console.log("Coluna 'fim' adicionada à tabela abastecimento");
+        }
+
+        if (!columnNamesAbastecimento.includes('tipo')) {
+            db.run("ALTER TABLE abastecimento ADD COLUMN tipo TEXT");
+            needsUpdate = true;
+            console.log("Coluna 'tipo' adicionada à tabela abastecimento");
+        }
+
+        if (needsUpdate) {
+            saveDatabase();
+            console.log("Tabelas atualizadas com sucesso");
+        }
+
+        return true;
+    } catch (error) {
+        console.error("Erro ao atualizar tabelas:", error);
+        return false;
+    }
 }
 
 // Executa uma consulta SQL e retorna os resultados

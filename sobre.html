@@ -7,6 +7,7 @@
     <title>UCAQ - Sobre</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/sobre.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="js/sobre.js" defer></script>
@@ -41,33 +42,62 @@
 
     <button class="menu-btn" onclick="toggleDrawer()">☰</button>
 
-    <div class="container">
+    <div class="container about-container">
         <div class="screen active" id="sobre">
-            <h2 class="header">Sobre o Sistema</h2>
-            <div class="card info-card">
+            <div class="hero-section">
+                <h1>Sobre o Sistema UCAQ</h1>
                 <p><strong>Relatório de Operações UCAQ</strong> é um sistema web desenvolvido para facilitar o registro,
-                    acompanhamento e compartilhamento das operações diárias de campo da unidade UCAQ.</p>
+                    acompanhamento e compartilhamento das operações diárias de campo da unidade de Circulação de Água
+                    Quente.
+                    A solução foi projetada para otimizar o fluxo de trabalho das equipes em campo e garantir o registro
+                    preciso de todas as atividades realizadas.</p>
+            </div>
 
-                <h3>Como usar:</h3>
-                <ul>
-                    <li>Preencha cada etapa do processo (Equipe, Deslocamento, Operações, Aguardo, Mobilização,
-                        Desmobilização, Abastecimento, Alimentação) conforme for realizando as atividades.</li>
-                    <li>Os dados ficam salvos no seu navegador e podem ser revisados a qualquer momento.</li>
-                    <li>Ao final, acesse a tela <b>Relatório</b> para visualizar todos os dados organizados em cards.
-                    </li>
-                    <li>Use o botão <b>Compartilhar Relatório</b> para enviar o resumo das operações por WhatsApp,
-                        no formato pronto para envio.</li>
-                </ul>
+            <div class="card info-card">
+                <div class="info-section">
+                    <h3>Como utilizar</h3>
+                    <ul>
+                        <li>Inicie preenchendo os dados da <strong>Equipe</strong> para o dia de trabalho.</li>
+                        <li>Registre cada etapa do processo (<strong>Deslocamento, Operações, Aguardo, Mobilização,
+                                Desmobilização, Abastecimento, Alimentação</strong>) conforme for realizando as
+                            atividades.</li>
+                        <li>Os dados são armazenados com segurança no banco de dados local e podem ser acessados
+                            mesmo offline.</li>
+                        <li>Ao final do dia, acesse a tela <strong>Relatório</strong> para visualizar todos os
+                            dados organizados em cards intuitivos.</li>
+                        <li>Utilize o botão <strong>Compartilhar via WhatsApp</strong> para enviar o resumo completo
+                            das operações, pronto para ser compartilhado com a coordenação.</li>
+                        <li>Caso necessário, você pode editar ou excluir registros diretamente no relatório.</li>
+                    </ul>
+                </div>
 
-                <h3>Principais recursos:</h3>
-                <ul>
-                    <li>Interface simples e adaptada para dispositivos móveis.</li>
-                    <li>Preenchimento rápido e navegação entre etapas.</li>
-                    <li>Compartilhamento fácil do relatório final.</li>
-                </ul>
+                <div class="info-section">
+                    <h3>Principais recursos</h3>
+                    <ul>
+                        <li><strong>Interface responsiva</strong> adaptada para todos os dispositivos móveis e desktop.
+                        </li>
+                        <li><strong>Preenchimento rápido</strong> com campos otimizados para o trabalho em campo.</li>
+                        <li><strong>Banco de dados local</strong> para funcionamento sem necessidade de internet.</li>
+                        <li><strong>Visualização organizada</strong> de todos os dados em um único relatório.</li>
+                        <li><strong>Compartilhamento facilitado</strong> via WhatsApp com formatação profissional.</li>
+                        <li><strong>Backup e exportação</strong> dos dados para garantir a segurança das informações.
+                        </li>
+                    </ul>
+                </div>
 
                 <div class="developer-info">
-                    <p><strong>Desenvolvido por Ivonildo Lima</strong></p>
+                    <h3>Desenvolvido por</h3>
+                    <p><strong>Ivonildo Lima</strong></p>
+                    <p class="developer-contact">Desenvolvedor web front-end</p>
+                    <div class="social-links">
+                        <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" title="Email"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+
+                <div class="version-info">
+                    Versão 1.2.0 • Atualizado em Setembro/2025
                 </div>
 
                 <div class="back-button">

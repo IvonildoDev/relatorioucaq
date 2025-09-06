@@ -565,21 +565,26 @@ async function generateReport() {
             type: 'abastecimento',
             source: 'sqlite',
             data: item,
-            startTime: '00:00', // SQLite não tem horário específico, usar 00:00 para ordenação
+            startTime: item.inicio || '00:00', // Usar o horário de início se disponível
             renderCard: () => {
                 return `
                 <div class="report-card card-abastecimento">
                     <div class="report-card-title">
-                        Abastecimento SQLite ${index + 1}
-                        <span>${formatDate(item.data)}</span>
+                        Abastecimento ${index + 1}
+                        <span>${item.inicio || formatDate(item.data)}</span>
                     </div>
                     <div class="report-card-body">
                         <p><strong>Local:</strong> ${item.local || 'Não informado'}</p>
                         <p><strong>Data:</strong> ${formatDate(item.data)}</p>
+                        ${item.tipo ? `<p><strong>Tipo:</strong> ${item.tipo}</p>` : ''}
+                        ${item.inicio && item.fim ? `<p><strong>Horário:</strong> ${item.inicio} - ${item.fim}</p>` : ''}
                         ${item.litros ? `<p><strong>Litros:</strong> ${item.litros}</p>` : ''}
                         ${item.valor ? `<p><strong>Valor:</strong> R$ ${item.valor}</p>` : ''}
                         ${item.kilometragem ? `<p><strong>Quilometragem:</strong> ${item.kilometragem} km</p>` : ''}
                         <p><strong>Registrado em:</strong> ${new Date(item.timestamp).toLocaleString('pt-BR')}</p>
+                        <button class="btn btn-danger btn-sm delete-btn" onclick="deleteReportItem('abastecimento', 'sqlite', '${item.id}')">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
                     </div>
                 </div>`;
             }
@@ -1066,7 +1071,7 @@ async function shareWhatsapp() {
             data: item,
             startTime: '00:00',
             renderText: () => {
-                return `*Abastecimento SQLite*\nLocal: ${item.local || 'Não informado'}\nData: ${formatDate(item.data)}\n${item.litros ? `Litros: ${item.litros}\n` : ''}${item.valor ? `Valor: R$ ${item.valor}\n` : ''}${item.kilometragem ? `Quilometragem: ${item.kilometragem} km\n` : ''}\n`;
+                return `*Abastecimento*\nLocal: ${item.local || 'Não informado'}\nData: ${formatDate(item.data)}\n${item.tipo ? `Tipo: ${item.tipo}\n` : ''}${item.inicio && item.fim ? `Horário: ${item.inicio} - ${item.fim}\n` : ''}${item.litros ? `Litros: ${item.litros}\n` : ''}${item.valor ? `Valor: R$ ${item.valor}\n` : ''}${item.kilometragem ? `Quilometragem: ${item.kilometragem} km\n` : ''}\n`;
             }
         });
     });
