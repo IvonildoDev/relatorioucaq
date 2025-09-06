@@ -305,7 +305,7 @@ function renderUltimoRegistro() {
         </div>
         `;
     } else {
-    div.innerHTML = "";
+        div.innerHTML = "";
     }
 }
 document.addEventListener('DOMContentLoaded', renderUltimoRegistro);
