@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 // --- Funções da Home ---
 function renderUltimoRegistro() {
-    const div = document.getElementById('ultimoRegistroCard');
+    const div = document.getElementById('ultimoRegistro');
     if (!div) return;
     const operacao = JSON.parse(localStorage.getItem('ucaq_operacao'));
     if (operacao) {
