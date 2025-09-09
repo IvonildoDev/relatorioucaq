@@ -1069,7 +1069,7 @@ async function shareWhatsapp() {
         allItems.push({
             type: 'abastecimento',
             data: item,
-            startTime: '00:00',
+            startTime: item.inicio || '00:00',
             renderText: () => {
                 return `*Abastecimento*\nLocal: ${item.local || 'Não informado'}\nData: ${formatDate(item.data)}\n${item.tipo ? `Tipo: ${item.tipo}\n` : ''}${item.inicio && item.fim ? `Horário: ${item.inicio} - ${item.fim}\n` : ''}${item.litros ? `Litros: ${item.litros}\n` : ''}${item.valor ? `Valor: R$ ${item.valor}\n` : ''}${item.kilometragem ? `Quilometragem: ${item.kilometragem} km\n` : ''}\n`;
             }
