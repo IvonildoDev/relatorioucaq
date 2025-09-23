@@ -872,6 +872,9 @@ function clearReport() {
 
 // Função para compartilhar o relatório no WhatsApp
 async function shareWhatsapp() {
+    // Recuperar manutenções do localStorage
+    const manutencoes = JSON.parse(localStorage.getItem('manutencoes')) || [];
+    const filteredManutencoes = manutencoes.filter(item => item.data && item.data === filterDate);
     const dateFilter = document.getElementById('dataFiltro').value;
     if (!dateFilter) {
         alert('Selecione uma data para gerar o relatório.');
@@ -927,6 +930,18 @@ async function shareWhatsapp() {
 
     // Criar estrutura para todos os itens e ordenar cronologicamente
     const allItems = [];
+
+    // Adicionar manutenções
+    filteredManutencoes.forEach(item => {
+        allItems.push({
+            type: 'manutencao',
+            data: item,
+            startTime: item.horaInicio || '00:00',
+            renderText: () => {
+                return `*Manutenção*\nTipo: ${item.tipo.charAt(0).toUpperCase() + item.tipo.slice(1)}\nData: ${formatDate(item.data)}\nHorário: ${item.horaInicio} - ${item.horaFim}\n${item.observacao ? `Observação: ${item.observacao}\n` : ''}`;
+            }
+        });
+    });
 
     // Adicionar equipe (sempre fica no topo)
     if (teamData && teamData.date && teamData.date.split('T')[0] === filterDate) {
