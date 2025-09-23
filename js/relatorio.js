@@ -109,6 +109,8 @@ async function loadSQLiteData(filterDate) {
 
 // Função para gerar um relatório baseado em uma data específica
 async function generateReport() {
+    // Recuperar manutenções do localStorage
+    const manutencoes = JSON.parse(localStorage.getItem('manutencoes')) || [];
     const dateFilter = document.getElementById('dataFiltro').value;
     const reportList = document.getElementById('reportList');
 
@@ -160,6 +162,9 @@ async function generateReport() {
     const filteredSupplies = supplies.filter(item => item.timestamp && item.timestamp.split('T')[0] === filterDate);
     const filteredMeals = meals.filter(item => item.timestamp && item.timestamp.split('T')[0] === filterDate);
 
+    // Filtrar manutenções pela data
+    const filteredManutencoes = manutencoes.filter(item => item.data && item.data === filterDate);
+
     // Verificar se existem dados para a data selecionada (incluindo os itens individuais e SQLite)
     const hasData = (
         filteredDisplacements.length > 0 ||
@@ -169,6 +174,7 @@ async function generateReport() {
         filteredDemobilizations.length > 0 ||
         filteredSupplies.length > 0 ||
         filteredMeals.length > 0 ||
+        filteredManutencoes.length > 0 ||
         sqliteData.abastecimentos.length > 0 ||
         sqliteData.equipes.length > 0 ||
         sqliteData.deslocamentos.length > 0 ||
@@ -194,6 +200,30 @@ async function generateReport() {
 
     // Criar uma estrutura para agrupar todos os itens por tipo
     const allItems = [];
+
+    // Adicionar manutenções
+    filteredManutencoes.forEach((item, index) => {
+        allItems.push({
+            type: 'manutencao',
+            data: item,
+            startTime: item.horaInicio || '00:00',
+            renderCard: () => {
+                return `
+                <div class="report-card card-manutencao">
+                    <div class="report-card-title">
+                        Manutenção ${index + 1}
+                        <span>${item.horaInicio || ''}</span>
+                    </div>
+                    <div class="report-card-body">
+                        <p><strong>Tipo:</strong> ${item.tipo.charAt(0).toUpperCase() + item.tipo.slice(1)}</p>
+                        <p><strong>Data:</strong> ${formatDate(item.data)}</p>
+                        <p><strong>Horário:</strong> ${item.horaInicio} - ${item.horaFim}</p>
+                        ${item.observacao ? `<p><strong>Observação:</strong> ${item.observacao}</p>` : ''}
+                    </div>
+                </div>`;
+            }
+        });
+    });
 
     // Adicionar equipe (se existir)
     if (teamData && teamData.date && teamData.date.split('T')[0] === filterDate) {
@@ -680,6 +710,7 @@ async function generateReport() {
         'desmobilizacao': 'fa-hammer',
         'abastecimento': 'fa-gas-pump',
         'alimentacao': 'fa-utensils'
+        , 'manutencao': 'fa-wrench'
     };
 
     // Títulos para cada tipo
@@ -692,6 +723,7 @@ async function generateReport() {
         'desmobilizacao': 'Desmobilizações',
         'abastecimento': 'Abastecimentos',
         'alimentacao': 'Alimentação'
+        , 'manutencao': 'Manutenção'
     };
 
     // Renderizar cada seção com seus itens

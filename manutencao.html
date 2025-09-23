@@ -4,15 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UCAQ - Relatório</title>
+    <title>UCAQ - Manutenção</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
-    <script src="js/database.js"></script>
-    <script src="js/relatorio.js" defer></script>
-    <script src="js/integracao.js" defer></script>
-    <script src="js/hamburger.js" defer></script>
+    <script src="js/manutencao.js" defer></script>
 </head>
 
 <body>
@@ -38,15 +34,11 @@
         <a href="desmobilizacao.html"><i class="fa-solid fa-hammer"></i>Desmobilização</a>
         <a href="abastecimento.html"><i class="fa-solid fa-gas-pump"></i>Abastecimento</a>
         <a href="alimentacao.html"><i class="fa-solid fa-utensils"></i>Alimentação</a>
-        <a href="relatorio.html" class="active"><i class="fa-solid fa-chart-bar"></i>Relatório</a>
+        <a href="relatorio.html"><i class="fa-solid fa-chart-bar"></i>Relatório</a>
         <a href="manutencao.html"><i class="fa-solid fa-wrench"></i>Manutenção</a>
         <a href="sobre.html"><i class="fa-solid fa-circle-info"></i>Sobre</a>
     </div>
-
-    <!-- Fundo escuro para quando o menu estiver aberto em mobile -->
     <div class="sidebar-backdrop" onclick="closeMenu()"></div>
-
-    <!-- Menu hambúrguer animado -->
     <label class="hamburger">
         <input type="checkbox">
         <svg viewBox="0 0 32 32">
@@ -56,53 +48,43 @@
             <path class="line" d="M7 16 27 16"></path>
         </svg>
     </label>
-
-    <!-- Botão de menu para mobile -->
-    <!-- <button class="menu-btn" onclick="toggleDrawer()">☰</button> -->
-
-    <!-- Header fixo para mobile -->
-    <div class="mobile-header-fixed" id="mobileHeader">
-        <!-- <h2><i class="fa-solid fa-chart-bar"></i> Relatório</h2> -->
-    </div>
-    <div class="mobile-header-space"></div>
-
     <div class="container">
-        <div class="screen active" id="relatorio">
-            <h2 class="header"><i class="fa-solid fa-chart-bar"></i> Relatório de Operações</h2>
-
-            <!-- Formulário de filtro responsivo -->
-            <div class="card relatorio-card" style="margin-bottom: 24px;">
-                <form id="filtroRelatorio"
-                    style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
-                    <div style="flex: 1 1 180px; min-width: 180px;">
-                        <label for="dataFiltro" style="font-weight: 600; color: #1976D2;">Filtrar por data:</label>
-                        <input type="date" id="dataFiltro" class="form-control" style="width: 100%;">
-                    </div>
-                    <button id="btnPesquisar" class="btn" type="button" style="min-width: 140px;">
-                        <i class="fa-solid fa-search"></i> Pesquisar
+        <div class="screen active" id="manutencao">
+            <h2 class="header">Manutenção</h2>
+            <div class="card">
+                <div class="form-group">
+                    <label for="tipoManutencao">Tipo de Manutenção</label>
+                    <select id="tipoManutencao">
+                        <option value="">Selecione o tipo</option>
+                        <option value="preventiva">Preventiva</option>
+                        <option value="corretiva">Corretiva</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dataManutencao">Data</label>
+                    <input type="date" id="dataManutencao">
+                </div>
+                <div class="form-group">
+                    <label for="horaInicio">Hora Início</label>
+                    <input type="time" id="horaInicio">
+                </div>
+                <div class="form-group">
+                    <label for="horaFim">Hora Fim</label>
+                    <input type="time" id="horaFim">
+                </div>
+                <div class="form-group">
+                    <label for="observacaoManutencao">Observação (opcional)</label>
+                    <textarea id="observacaoManutencao" rows="2" maxlength="150"
+                        placeholder="Digite uma observação (máx. 150 caracteres)"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-registrar" onclick="saveManutencao()">
+                        <i class="fas fa-check"></i> Registrar Manutenção
                     </button>
-                </form>
-            </div>
-
-            <!-- Conteúdo do relatório com cards -->
-            <div id="reportList" class="report-cards-container"
-                style="display: flex; flex-direction: column; gap: 18px;"></div>
-
-            <!-- Botões de ação -->
-            <div class="card relatorio-card"
-                style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-top: 24px;">
-                <button onclick="clearReport()" id="clearReportBtn" class="btn btn-danger"
-                    style="flex: 1 1 180px; min-width: 180px;">
-                    <i class="fa-solid fa-trash-alt"></i> Limpar Relatório
-                </button>
-                <button id="shareWhatsapp" class="btn btn-whatsapp"
-                    style="flex: 1 1 180px; min-width: 180px; background: #25D366; color: #fff;">
-                    <i class="fa-brands fa-whatsapp"></i> Compartilhar no WhatsApp
-                </button>
+                </div>
             </div>
         </div>
     </div>
-
     <footer style="text-align: center;">Relatório de Operações UCAQ © 2025</footer>
 </body>
 
