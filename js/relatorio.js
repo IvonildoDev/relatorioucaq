@@ -881,7 +881,7 @@ async function shareWhatsapp() {
     const filterDate = dateFilter.split('T')[0];
     // Recuperar manutenções do localStorage
     const manutencoes = JSON.parse(localStorage.getItem('manutencoes')) || [];
-    const filteredManutencoes = manutencoes.filter(item => item.data && item.data === filterDate || item.data === filterDate);
+    const filteredManutencoes = manutencoes.filter(item => item.data && item.data === filterDate);
 
     // Mostrar indicador de carregamento
     const shareBtn = document.getElementById('shareWhatsapp');
