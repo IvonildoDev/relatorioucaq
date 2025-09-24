@@ -893,7 +893,6 @@ async function shareWhatsapp() {
     const formattedDate = new Date(dateFilter).toLocaleDateString('pt-BR');
 
     // Carregar dados do SQLite
-    const filterDate = dateFilter.split('T')[0];
     const sqliteData = await loadSQLiteData(filterDate);
 
     // Recuperar dados do localStorage - tanto arrays quanto itens individuais
@@ -930,267 +929,122 @@ async function shareWhatsapp() {
     const filteredSupplies = supplies.filter(item => item.timestamp && item.timestamp.split('T')[0] === filterDate);
     const filteredMeals = meals.filter(item => item.timestamp && item.timestamp.split('T')[0] === filterDate);
 
-    // Criar estrutura para todos os itens e ordenar cronologicamente
-    const allItems = [];
+    // Montar todos os cards em um array para ordenação por hora de início
+    const cards = [];
 
-    // Adicionar manutenções
+    // Equipe (sempre primeiro)
+    let operador = 'Não informado';
+    let auxiliar = 'Não informado';
+    let dataEquipe = formattedDate;
+    let pocoEquipe = 'Não informado';
+    if (teamData && teamData.date && teamData.date.split('T')[0] === filterDate) {
+        operador = teamData.operator || operador;
+        auxiliar = teamData.assistant || auxiliar;
+        dataEquipe = formatDate(teamData.date) || dataEquipe;
+        pocoEquipe = teamData.well || pocoEquipe;
+    } else if (equipe) {
+        operador = equipe.operador || operador;
+        auxiliar = equipe.auxiliar || auxiliar;
+        dataEquipe = formatDate(equipe.data) || dataEquipe;
+        pocoEquipe = equipe.poco || pocoEquipe;
+    }
+    cards.push({
+        type: 'equipe',
+        hora: '00:00',
+        text: `Equipe\nOperador: ${operador}\nAuxiliar: ${auxiliar}\nData: ${dataEquipe}\nPoço: ${pocoEquipe}\n\n`
+    });
+
+    // Manutenção
     filteredManutencoes.forEach(item => {
-        allItems.push({
+        cards.push({
             type: 'manutencao',
-            data: item,
-            startTime: item.horaInicio || '00:00',
-            renderText: () => {
-                return `*Manutenção*\nTipo: ${item.tipo.charAt(0).toUpperCase() + item.tipo.slice(1)}\nData: ${formatDate(item.data)}\nHorário: ${item.horaInicio} - ${item.horaFim}\n${item.observacao ? `Observação: ${item.observacao}\n` : ''}`;
-            }
+            hora: item.horaInicio || '00:00',
+            text: `Manutenção\nTipo: ${item.tipo.charAt(0).toUpperCase() + item.tipo.slice(1)}\nInicio: ${item.horaInicio} \nFim: ${item.horaFim}\nObservação: ${item.observacao || ''}\n\n`
         });
     });
 
-    // Adicionar equipe (sempre fica no topo)
-    if (teamData && teamData.date && teamData.date.split('T')[0] === filterDate) {
-        allItems.push({
-            type: 'equipe',
-            data: teamData,
-            startTime: '00:00',
-            renderText: () => {
-                return `*Relatório de Operação Ucaq*\n\n*Equipe*\nOperador: ${teamData.operator || 'Não informado'}\nAuxiliar: ${teamData.assistant || 'Não informado'}\nData: ${formatDate(teamData.date)}\nPoço: ${teamData.well || 'Não informado'}\n\n`;
-            }
+    // Abastecimento
+    filteredSupplies.forEach(item => {
+        cards.push({
+            type: 'abastecimento',
+            hora: item.startTime || '00:00',
+            text: `Abastecimento\nLocal: ${item.well || 'Não informado'}\nTipo: ${item.supplyType}\nHora Inicio: ${item.startTime}\n Hora Fim: ${item.endTime}\n\n`
         });
-    }
-    if (equipe) {
-        allItems.push({
-            type: 'equipe',
-            data: equipe,
-            startTime: '00:00',
-            renderText: () => {
-                const date = new Date();
-                const formattedCurrentDate = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
-                return `*Relatório de Operação Ucaq*\n\n*Equipe*\nOperador: ${equipe.operador || 'Não informado'}\nAuxiliar: ${equipe.auxiliar || 'Não informado'}\nData: ${formatDate(equipe.data) || formattedCurrentDate}\nPoço: ${equipe.poco || 'Não informado'}\n\n`;
-            }
-        });
-    }
+    });
 
-    // Adicionar deslocamentos
+    // Repouso (alimentação)
+    filteredMeals.forEach(item => {
+        cards.push({
+            type: 'repouso',
+            hora: item.startTime || '00:00',
+            text: `Repouso\nPoço:${item.well || 'Não informado'}\nHora Início: ${item.startTime}\nHora Fim: ${item.endTime}\nAtividade: ${item.reason}\n\n`
+        });
+    });
+
+    // Deslocamento
     filteredDisplacements.forEach(item => {
         const kmDiff = item.odometerEnd - item.odometerStart;
-        allItems.push({
+        cards.push({
             type: 'deslocamento',
-            data: item,
-            startTime: item.startTime || '00:00',
-            renderText: () => {
-                return `*Deslocamento*\nPoço: ${item.well || 'Não informado'}\nOrigem: ${item.origin}\nDestino: ${item.destination}\nHora Inicial: ${item.startTime}\nHora Final: ${item.endTime}\nKM Inicial: ${item.odometerStart}\nKM Final: ${item.odometerEnd}\nTotal Percorrido: ${kmDiff.toFixed(0)} km\n\n`;
-            }
+            hora: item.startTime || '00:00',
+            text: `Deslocamento\nPoço: ${item.well || 'Não informado'}\nOrigem: ${item.origin}\nDestino: ${item.destination}\nHora Inicial: ${item.startTime}\nHora Final: ${item.endTime}\nKM Inicial: ${item.odometerStart}\nKM Final: ${item.odometerEnd}\nTotal Percorrido: ${kmDiff.toFixed(0)} km\n\n`
         });
     });
-    if (deslocamento) {
-        const kmDiff = (deslocamento.kmFim && deslocamento.kmInicio)
-            ? deslocamento.kmFim - deslocamento.kmInicio
-            : 0;
-        allItems.push({
-            type: 'deslocamento',
-            data: deslocamento,
-            startTime: deslocamento.inicio || '00:00',
-            renderText: () => {
-                return `*Deslocamento*\nPoço: ${deslocamento.poco || 'Não informado'}\nOrigem: ${deslocamento.origem || 'Não informado'}\nDestino: ${deslocamento.destino || 'Não informado'}\nHora Inicial: ${deslocamento.inicio || ''}\nHora Final: ${deslocamento.fim || ''}\nKM Inicial: ${deslocamento.kmInicio || ''}\nKM Final: ${deslocamento.kmFim || ''}\nTotal Percorrido: ${kmDiff.toFixed(0)} km\n\n`;
-            }
-        });
-    }
 
-    // Adicionar mobilizações
+    // Mobilização
     filteredMobilizations.forEach(item => {
-        allItems.push({
+        cards.push({
             type: 'mobilizacao',
-            data: item,
-            startTime: item.startTime || '00:00',
-            renderText: () => {
-                return `*Mobilização*\nPoço: ${item.well || 'Não informado'}\nHora Início: ${item.startTime}\nHora Fim: ${item.endTime}\nAtividade: ${item.activity}\n\n`;
-            }
+            hora: item.startTime || '00:00',
+            text: `Mobilização\nPoço: ${item.well || 'Não informado'}\nHora Início: ${item.startTime}\nHora Fim: ${item.endTime}\nAtividade: ${item.activity}\n\n`
         });
     });
-    if (mobilizacao) {
-        allItems.push({
-            type: 'mobilizacao',
-            data: mobilizacao,
-            startTime: mobilizacao.inicio || '00:00',
-            renderText: () => {
-                return `*Mobilização*\nPoço: ${mobilizacao.poco || 'Não informado'}\nHora Início: ${mobilizacao.inicio || ''}\nHora Fim: ${mobilizacao.fim || ''}\nAtividade: ${mobilizacao.atividade || 'Não informado'}\n\n`;
-            }
-        });
-    }
 
-    // Adicionar operações
+    // Operação
     filteredOperations.forEach(item => {
-        allItems.push({
+        cards.push({
             type: 'operacao',
-            data: item,
-            startTime: item.startTime || '00:00',
-            renderText: () => {
-                return `*Operação*\nID do Poço: ${item.pocoId || ''}\nPoço: ${item.poco || 'Não informado'}\nAtividade: ${item.servico}\nHora Início: ${item.startTime}\nHora Fim: ${item.endTime}\nVolume: ${item.volume || ''} bbl\nTemperatura: ${item.temperature || ''} °C\nPressão: ${item.pressure || ''} psi\nObservação: ${item.observation || ''}\n\n`;
-            }
+            hora: item.startTime || '00:00',
+            text: `Operação\nID do Poço: ${item.pocoId || ''}\nPoço: ${item.poco || 'Não informado'}\nAtividade: ${item.servico}\nHora Início: ${item.startTime}\nHora Fim: ${item.endTime}\nVolume: ${item.volume || ''} bbl\nTemperatura: ${item.temperature || ''} °C\nPressão: ${item.pressure || ''} psi\nObservação: ${item.observation || ''}\n\n`
         });
     });
-    if (operacao) {
-        allItems.push({
-            type: 'operacao',
-            data: operacao,
-            startTime: operacao.inicio || '00:00',
-            renderText: () => {
-                return `*Operação*\nID do Poço: ${operacao.idPoco || ''}\nPoço: ${operacao.poco || 'Não informado'}\nAtividade: ${operacao.atividade || 'Não informado'}\nHora Início: ${operacao.inicio || ''}\nHora Fim: ${operacao.fim || ''}\nVolume: ${operacao.volume || ''} bbl\nTemperatura: ${operacao.temperatura || ''} °C\nPressão: ${operacao.pressao || ''} psi\nObservação: ${operacao.observacao || ''}\n\n`;
-            }
-        });
-    }
 
-    // Adicionar desmobilizações
+    // Desmobilização
     filteredDemobilizations.forEach(item => {
-        allItems.push({
+        cards.push({
             type: 'desmobilizacao',
-            data: item,
-            startTime: item.startTime || '00:00',
-            renderText: () => {
-                return `*Desmobilização*\nPoço: ${item.well || 'Não informado'}\nHora Início: ${item.startTime}\nHora Fim: ${item.endTime}\nAtividade: ${item.activity}\n\n`;
-            }
+            hora: item.startTime || '00:00',
+            text: `Desmobilização\nPoço: ${item.well || 'Não informado'}\nHora Início: ${item.startTime}\nHora Fim: ${item.endTime}\nAtividade: ${item.activity}\n\n`
         });
     });
-    if (desmobilizacao) {
-        allItems.push({
-            type: 'desmobilizacao',
-            data: desmobilizacao,
-            startTime: desmobilizacao.inicio || '00:00',
-            renderText: () => {
-                return `*Desmobilização*\nPoço: ${desmobilizacao.poco || 'Não informado'}\nHora Início: ${desmobilizacao.inicio || ''}\nHora Fim: ${desmobilizacao.fim || ''}\nAtividade: ${desmobilizacao.atividade || 'Não informado'}\n\n`;
-            }
-        });
-    }
 
-    // Adicionar aguardos e repouso
+    // Aguardo
     filteredWaitings.forEach(item => {
-        allItems.push({
+        cards.push({
             type: 'aguardo',
-            data: item,
-            startTime: item.startTime || '00:00',
-            renderText: () => {
-                const title = item.reason.toLowerCase().includes('almoço') ||
-                    item.reason.toLowerCase().includes('refeicao') ||
-                    item.reason.toLowerCase().includes('refeição') ?
-                    'Repouso' : 'Aguardo';
-                return `*${title}*\nHora Início: ${item.startTime}\nHora Fim: ${item.endTime}\nDuração: ${item.duration || 'Não informado'}\nAtividade: ${item.reason}\n\n`;
-            }
-        });
-    });
-    if (aguardo) {
-        allItems.push({
-            type: 'aguardo',
-            data: aguardo,
-            startTime: aguardo.inicio || '00:00',
-            renderText: () => {
-                const title = aguardo.motivo.toLowerCase().includes('almoço') ||
-                    aguardo.motivo.toLowerCase().includes('refeicao') ||
-                    aguardo.motivo.toLowerCase().includes('refeição') ?
-                    'Repouso' : 'Aguardo';
-                return `*${title}*\nHora Início: ${aguardo.inicio || ''}\nHora Fim: ${aguardo.fim || ''}\nDuração: ${aguardo.tempoAguardando || 'Não informado'}\nAtividade: ${aguardo.motivo || 'Não informado'}\n\n`;
-            }
-        });
-    }
-
-    // Adicionar abastecimentos do localStorage
-    filteredSupplies.forEach(item => {
-        allItems.push({
-            type: 'abastecimento',
-            data: item,
-            startTime: item.startTime || '00:00',
-            renderText: () => {
-                return `*Abastecimento*\nPoço: ${item.well || 'Não informado'}\nTipo: ${item.supplyType}\nHora Início: ${item.startTime}\nHora Fim: ${item.endTime}\n\n`;
-            }
-        });
-    });
-    if (abastecimento) {
-        allItems.push({
-            type: 'abastecimento',
-            data: abastecimento,
-            startTime: abastecimento.inicio || '00:00',
-            renderText: () => {
-                return `*Abastecimento*\nPoço: ${abastecimento.poco || 'Não informado'}\nTipo: ${abastecimento.tipo || 'Não informado'}\nHora Início: ${abastecimento.inicio || ''}\nHora Fim: ${abastecimento.fim || ''}\n\n`;
-            }
-        });
-    }
-
-    // Adicionar abastecimentos do SQLite
-    sqliteData.abastecimentos.forEach(item => {
-        allItems.push({
-            type: 'abastecimento',
-            data: item,
-            startTime: item.inicio || '00:00',
-            renderText: () => {
-                return `*Abastecimento*\nLocal: ${item.local || 'Não informado'}\nData: ${formatDate(item.data)}\n${item.tipo ? `Tipo: ${item.tipo}\n` : ''}${item.inicio && item.fim ? `Horário: ${item.inicio} - ${item.fim}\n` : ''}${item.litros ? `Litros: ${item.litros}\n` : ''}${item.valor ? `Valor: R$ ${item.valor}\n` : ''}${item.kilometragem ? `Quilometragem: ${item.kilometragem} km\n` : ''}\n`;
-            }
+            hora: item.startTime || '00:00',
+            text: `Aguardo\nPoço: ${item.well || 'Não informado'}\nHora Início: ${item.startTime}\nHora Fim: ${item.endTime}\nDuração: ${item.duration || ''}\nAtividade: ${item.reason}\n\n`
         });
     });
 
-    // Adicionar alimentação
-    filteredMeals.forEach(item => {
-        allItems.push({
-            type: 'alimentacao',
-            data: item,
-            startTime: item.startTime || '00:00',
-            renderText: () => {
-                return `*Repouso*\nHora Início: ${item.startTime}\nHora Fim: ${item.endTime}\nAtividade: ${item.reason}\n\n`;
-            }
-        });
-    });
-    if (alimentacao) {
-        allItems.push({
-            type: 'alimentacao',
-            data: alimentacao,
-            startTime: alimentacao.inicio || '00:00',
-            renderText: () => {
-                return `*Repouso*\nHora Início: ${alimentacao.inicio || ''}\nHora Fim: ${alimentacao.fim || ''}\nAtividade: ${alimentacao.motivo || 'Não informado'}\n\n`;
-            }
-        });
-    }
-
-    // Função para converter horário (HH:MM) em minutos para ordenação
+    // Função para converter horário (HH:MM) em minutos
     function timeToMinutes(timeStr) {
         if (!timeStr || typeof timeStr !== 'string' || !timeStr.includes(':')) {
-            return 0; // Valor padrão para itens sem horário válido
+            return 0;
         }
-
-        const [hours, minutes] = timeStr.split(':').map(Number);
-        return hours * 60 + minutes;
+        const [h, m] = timeStr.split(':').map(Number);
+        return h * 60 + m;
     }
 
-    // Ordenar todos os itens por horário de início
-    allItems.sort((a, b) => {
-        // Manter equipe sempre no início
-        if (a.type === 'equipe') return -1;
-        if (b.type === 'equipe') return 1;
+    // Ordenar os cards exceto equipe pelo horário de início
+    const equipeCard = cards.shift();
+    cards.sort((a, b) => timeToMinutes(a.hora) - timeToMinutes(b.hora));
 
-        // Ordenar os demais itens por horário
-        return timeToMinutes(a.startTime) - timeToMinutes(b.startTime);
+    // Montar o texto final
+    let text = '*Relatório de Operação Ucaq*\n\n' + equipeCard.text;
+    cards.forEach(card => {
+        text += card.text;
     });
-
-    // Gerar o texto do relatório em ordem cronológica
-    let text = '';
-
-    // Primeiro, verificar se há algum item de equipe
-    const equipeItem = allItems.find(item => item.type === 'equipe');
-    if (equipeItem) {
-        text = equipeItem.renderText(); // Iniciar com a equipe
-
-        // Remover o item de equipe para não duplicar
-        const itemsWithoutEquipe = allItems.filter(item => item.type !== 'equipe');
-
-        // Adicionar os demais itens em ordem cronológica
-        itemsWithoutEquipe.forEach(item => {
-            text += item.renderText();
-        });
-    } else {
-        // Se não há equipe, iniciar com um cabeçalho padrão
-        text = `*Relatório de Operação Ucaq*\n\nData: ${formattedDate}\n\n`;
-
-        // Adicionar todos os itens em ordem cronológica
-        allItems.forEach(item => {
-            text += item.renderText();
-        });
-    }
 
     // Atraso simulado para mostrar o indicador de carregamento
     setTimeout(() => {
