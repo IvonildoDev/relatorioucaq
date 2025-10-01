@@ -1,0 +1,21 @@
+# Arquivos/Pastas que podem ser removidos com segurança (se não usados no seu fluxo)
+
+- db/ (está vazia)
+- details.html
+- js/details.js
+- js/detalhes.js
+- js/delete-record.js
+- js/table-updater.js
+- css/footer-fixed.css
+- css/delete-buttons.css
+- update-hamburger-menu.js
+- node_modules/ (pasta de dependências, pode ser regenerada com npm install)
+- .git/ (apenas se não quiser mais controle de versão)
+- ANALISE_TECNICA.md
+- PLANO_RESOLUCAO.md
+- README.md
+
+## Observações
+- Remova apenas se tiver certeza de que não são usados em nenhum HTML, menu ou fluxo do sistema.
+- Se algum arquivo da lista for necessário, mantenha-o.
+- Para arquivos wasm e SQL.js, mantenha apenas o necessário para o funcionamento do banco local.

@@ -895,7 +895,7 @@ async function shareWhatsapp() {
     // Carregar dados do SQLite
     const sqliteData = await loadSQLiteData(filterDate);
 
-    // Recuperar dados do localStorage - tanto arrays quanto itens individuais
+    // Recuperar dados do localStorage - tanto arrays quanto itens individuais'
     const teamData = JSON.parse(localStorage.getItem('teamData')) || {};
     const equipe = JSON.parse(localStorage.getItem('ucaq_equipe')) || null;
 
